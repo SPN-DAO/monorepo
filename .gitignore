@@ -48,6 +48,14 @@ packages/subgraph/abis/*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/sdks
+!**/.yarn/versions
+
 .eslintcache
 
 # testing
@@ -56,6 +64,7 @@ coverage
 # misc
 .DS_Store
 .netlify
+.vscode
 
 # debug
 npm-debug.log*
