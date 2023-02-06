@@ -115,6 +115,17 @@ contract SPN_Factory is ERC721Upgradeable, ERC721BurnableUpgradeable, ERC721URIS
 
     function userBurn(uint256 tokenId) public {
         require(ownerOf(tokenId) == msg.sender, "You do not own this SBT");
+
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            SQLHelpers.toDelete(
+                _tablePrefix, // prefix
+                _metadataTableId, // table id
+                string.concat("id = ", Strings.toString(tokenId),";")
+            )
+        );
+
         _burn(tokenId);
     }
 
