@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useBalance } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 
 import DelayedProgressBar from "../common/DelayedProgressBar";
 
@@ -17,14 +17,18 @@ interface ConnectedLayoutProps {
 
 // This is a layout component that will be used in the pages that require the user to have a token. If the user does not have the token, it will redirect to the token creation page.
 const HasTokenLayout = ({ children }: ConnectedLayoutProps) => {
+  const { address } = useAccount();
+
   const balanceQuery = useBalance({
-    // TODO: Replace this with the address of the SPN token. Using devdao CODE token for now.
-    address: "0xb24cd494faE4C180A89975F1328Eab2a7D5d8f11",
+    address,
+    // TODO: Add SPN token address. Now fetching eth balance
+    // tokenAddress: '0x0',
   });
+
   const router = useRouter();
 
   useEffect(() => {
-    if (balanceQuery.isSuccess && balanceQuery.data?.value.lt(1)) {
+    if (balanceQuery.isSuccess && balanceQuery.data?.value.lte(0)) {
       void router.replace("/user/onboarding/no-token");
     }
   }, [balanceQuery.isSuccess, balanceQuery.data, router]);
@@ -52,7 +56,7 @@ const HasTokenLayout = ({ children }: ConnectedLayoutProps) => {
     );
   }
 
-  if (balanceQuery.isSuccess && balanceQuery?.data?.value.gte(1))
+  if (balanceQuery?.data?.value.gt(0))
     return (
       <Flex minH="100vh" direction="column">
         {children}
