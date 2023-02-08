@@ -1,7 +1,9 @@
 import "@rainbow-me/rainbowkit/styles.css";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
+import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import type { ReactElement, ReactNode } from "react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import {
   mainnet,
@@ -13,6 +15,14 @@ import {
 } from "wagmi/chains";
 import { infuraProvider } from "wagmi/providers/infura";
 import { publicProvider } from "wagmi/providers/public";
+
+export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -44,12 +54,16 @@ const wagmiClient = createClient({
   webSocketProvider,
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout || ((page) => page);
+
   return (
     <WagmiConfig client={wagmiClient}>
       <ChakraProvider>
         <RainbowKitProvider chains={chains}>
-          <Component {...pageProps} />
+          <Flex minH="100vh" direction="column">
+            {getLayout(<Component {...pageProps} />)}
+          </Flex>
         </RainbowKitProvider>
       </ChakraProvider>
     </WagmiConfig>
