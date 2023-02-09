@@ -13,7 +13,7 @@ import {
   goerli,
   localhost,
 } from "wagmi/chains";
-import { infuraProvider } from "wagmi/providers/infura";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
@@ -35,8 +35,8 @@ const { chains, provider, webSocketProvider } = configureChains(
     arbitrum,
   ],
   [
-    infuraProvider({
-      apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY,
+    alchemyProvider({
+      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
     }),
     publicProvider(),
   ]
