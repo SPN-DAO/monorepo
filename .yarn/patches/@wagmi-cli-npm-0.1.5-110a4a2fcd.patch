@@ -1,0 +1,20 @@
+diff --git a/dist/chunk-ZXT6V2PA.js b/dist/chunk-ZXT6V2PA.js
+index bd2f6dd07aa4d405eda638b48b2bdbe1a9f23c2e..16f973a2070589901c62f4c296b8664f9dda9d60 100644
+--- a/dist/chunk-ZXT6V2PA.js
++++ b/dist/chunk-ZXT6V2PA.js
+@@ -168,6 +168,7 @@ async function getIsPackageInstalled({
+   packageName,
+   cwd = process.cwd()
+ }) {
++  return true;
+   try {
+     const packageManager = await getPackageManager();
+     const command = packageManager === "yarn" ? ["list", "--pattern", packageName] : ["ls", packageName];
+@@ -191,6 +192,7 @@ async function getInstallCommand(packageName) {
+   }
+ }
+ async function getPackageManager() {
++  return "yarn";
+   const userAgent = process.env.npm_config_user_agent;
+   if (userAgent) {
+     if (userAgent.includes("pnpm"))
