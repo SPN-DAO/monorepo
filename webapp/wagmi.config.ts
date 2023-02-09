@@ -3,7 +3,7 @@ import { hardhat, react } from "@wagmi/cli/plugins";
 import { erc20ABI } from "wagmi";
 
 export default defineConfig({
-  out: "generated/wagmi.ts",
+  out: "generated/wagmiTypes.ts",
   contracts: [
     {
       name: "erc20",

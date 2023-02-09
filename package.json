@@ -14,13 +14,13 @@
     "core:dev": "yarn workspace core dev",
     "core:compile": "yarn workspace core compile",
     "core:deploy": "yarn workspace core deploy",
-    "core:generate": "yarn workspace core generate"
+    "core:generate": "yarn workspace core generate",
+    "generate": "yarn core:compile && yarn core:generate && yarn web:generate"
   },
   "dependencies": {
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
-    "@wagmi/cli": "^0.1.3",
     "hardhat": "^2.12.6",
     "typescript": "^4.9.5"
   }
