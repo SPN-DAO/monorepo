@@ -32,6 +32,6 @@
     "**/*.css",
     "node_modules",
     "**/.yalc/**/*",
-    ".yalc/**/*"
+    ".yalc/**/*",
   ]
 }
