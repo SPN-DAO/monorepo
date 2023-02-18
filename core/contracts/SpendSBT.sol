@@ -47,16 +47,17 @@ contract SpendSBT is ERC721URIStorage, ERC721Burnable, ReentrancyGuard, Ownable 
     }
 
     function mintLitSBT(                
-        string memory imageUrl
+        string memory imageUrl,
+        address user
     ) public nonReentrant {
         require(admin == msg.sender, "Only admin can mint the SBT");
         _tokenIds.increment();
         uint256 newNftTokenId = _tokenIds.current();
-        _safeMint(msg.sender, newNftTokenId);
+        _safeMint(user, newNftTokenId);
         _setTokenURI(newNftTokenId, getTokenURI(newNftTokenId, imageUrl));
         tokenIdToNft[newNftTokenId] = imageUrl;
-        ownerToTokenId[msg.sender] = newNftTokenId;
-        tokenIdToOwner[newNftTokenId] = msg.sender;
+        ownerToTokenId[user] = newNftTokenId;
+        tokenIdToOwner[newNftTokenId] = user;
     }
 
     // Fetch all the NFTs to display
