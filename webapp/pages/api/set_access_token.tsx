@@ -7,6 +7,7 @@ import {
   PlaidApi,
   PlaidEnvironments,
 } from "plaid";
+import axios from "axios";
 
 async function setToken(userId: string, token: string, itemId: string) {
   const url = `mongodb+srv://admin:${process.env.DB_PASSWORD}@spndao.vjnl9b2.mongodb.net/?retryWrites=true&w=majority`;
@@ -51,17 +52,31 @@ export default async function handler(
       public_token: req.body.public_token,
     })
     .then(async (response) => {
-      await setToken("abc", response.data.access_token, response.data.item_id)
-        .then(() => {
-          res.status(200).json({ success: true });
+      await setToken(
+        "abc",
+        response.data.access_token,
+        response.data.item_id
+      ).catch((error) => {
+        console.log(`setToken() failed: ${error}`);
+        res.status(500).json({ error: error });
+      });
+
+      // init the tx sync
+      await client
+        .transactionsSync({
+          access_token: response.data.access_token,
         })
         .catch((error) => {
-          console.log(`setToken() failed: ${error}`);
+          console.log(`transactionsSync() failed: ${error}`);
+          res.status(500).json({ error: error });
         });
     })
     .catch((error) => {
       console.log(`exchange public token failed: ${error}`);
       console.log(`public_token: ${req.body.public_token}`);
       res.status(500).json({ error: error });
+    })
+    .finally(() => {
+      res.status(200).json({ success: true });
     });
 }

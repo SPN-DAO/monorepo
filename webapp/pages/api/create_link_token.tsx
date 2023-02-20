@@ -7,21 +7,20 @@ import {
   PlaidEnvironments,
   Products,
 } from "plaid";
+const configuration = new Configuration({
+  basePath: PlaidEnvironments.sandbox,
+  baseOptions: {
+    headers: {
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+      "PLAID-SECRET": process.env.PLAID_SECRET,
+    },
+  },
+});
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const configuration = new Configuration({
-    basePath: PlaidEnvironments.sandbox,
-    baseOptions: {
-      headers: {
-        "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
-        "PLAID-SECRET": process.env.PLAID_SECRET,
-      },
-    },
-  });
-
   const client = new PlaidApi(configuration);
 
   await client
@@ -33,6 +32,7 @@ export default async function handler(
       products: [Products.Auth, Products.Transactions],
       country_codes: [CountryCode.Us],
       language: "en",
+      webhook: process.env.NEXT_PUBLIC_PLAID_HOOK,
       account_filters: {
         depository: {
           account_subtypes: [
