@@ -1,7 +1,7 @@
 import { Button, Heading } from "@chakra-ui/react";
 
-import CenteredCard from "~~/components/CenteredCard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
+import CenteredCard from "~~/components/OnBoardingCenteredCard";
 import { NextPageWithLayout } from "~~/pages/_app";
 
 const NoTokenPage: NextPageWithLayout = () => {

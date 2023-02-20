@@ -67,9 +67,8 @@ const Home = () => {
         <HStack w="full" maxW="2xl" spacing={10}>
           <StyledLinkBox href="/user/dashboard" content="End User" />
           <StyledLinkBox
-            href="/user/dashboard"
+            href="/datasubscriber/onboarding/not-connected"
             content="Data subscriber"
-            isDisabled
           />
         </HStack>
       </Center>

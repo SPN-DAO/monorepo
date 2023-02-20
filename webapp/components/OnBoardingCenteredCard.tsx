@@ -1,4 +1,6 @@
-import { Center, Card, Box } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
+
+import OnBoardingCard from "./OnBoardingCard";
 
 interface CenteredCardProps {
   children: React.ReactNode;
@@ -18,11 +20,12 @@ const CenteredCard = ({
           flex: 1,
         }}
       >
-        <Box>
-          {prependedContent && <Box mb={16}>{prependedContent}</Box>}
-          <Card p={12}>{children}</Card>
-          {appendedContent && <Box>{appendedContent}</Box>}
-        </Box>
+        <OnBoardingCard
+          appendedContent={appendedContent}
+          prependedContent={prependedContent}
+        >
+          {children}
+        </OnBoardingCard>
       </Center>
     </>
   );
