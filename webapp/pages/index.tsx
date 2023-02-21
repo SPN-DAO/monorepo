@@ -1,9 +1,12 @@
 import {
   Center,
+  Flex,
   Heading,
   HStack,
   LinkBox,
   LinkOverlay,
+  Spacer,
+  Link,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import NextLink from "next/link";
@@ -62,6 +65,16 @@ const Home = () => {
         <title>SPN DAO</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Flex padding={4}>
+        <Spacer />
+        <Link
+          as={NextLink}
+          href="/admin/onboarding/not-connected"
+          colorScheme="blue"
+        >
+          DAO Admin
+        </Link>
+      </Flex>
 
       <Center minH="100vh">
         <HStack w="full" maxW="2xl" spacing={10}>
