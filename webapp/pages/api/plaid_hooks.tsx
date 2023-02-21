@@ -50,7 +50,7 @@ function logHook(req: PlaidHook) {
 }
 
 export default async function handler(req: PlaidHook, res: NextApiResponse) {
-  logHook(req);
+  // logHook(req);
 
   if (req.body.webhook_code === "HISTORICAL_UPDATE") {
     const access_token = await getAccessToken(req.body.item_id);
