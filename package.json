@@ -18,7 +18,9 @@
     "generate": "yarn core:compile && yarn core:generate && yarn web:generate"
   },
   "dependencies": {
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "plaid": "^12.4.0",
+    "react-plaid-link": "^3.3.2"
   },
   "devDependencies": {
     "hardhat": "^2.12.6",
