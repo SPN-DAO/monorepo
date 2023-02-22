@@ -84,9 +84,9 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "unused-imports/no-unused-imports-ts": "warn",
+    "unused-imports/no-unused-imports-ts": "off",
     "unused-imports/no-unused-vars-ts": [
-      "warn",
+      "off",
       {
         vars: "all",
         varsIgnorePattern: "^_",
@@ -129,7 +129,7 @@ module.exports = {
     "import/no-extraneous-dependencies": [
       "error",
       {
-        devDependencies: true,
+        devDependencies: false,
         optionalDependencies: false,
         peerDependencies: false,
       },
