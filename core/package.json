@@ -1,6 +1,7 @@
 {
   "name": "core",
   "scripts": {
+    "hardhat": "hardhat",
     "build": "hardhat compile",
     "compile": "hardhat compile",
     "test": "hardhat test",
@@ -11,7 +12,7 @@
     "deploy:goerli": "hardhat deploy --network goerli --export-all ./generated/hardhat_contracts.json",
     "deploy:polygon": "hardhat deploy --network polygon --export-all ./generated/hardhat_contracts.json",
     "deploy:mumbai": "hardhat deploy --network mumbai --export-all ./generated/hardhat_contracts.json",
-    "generate": "hardhat export  --export-all ./generated/hardhat_contracts.json"
+    "generate": "hardhat export --export-all ./generated/hardhat_contracts.json"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
@@ -37,8 +38,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "ethers": "^5.7.2",
-    "hardhat": "^2.12.6",
-    "hardhat-gas-reporter": "^1.0.9",
     "solidity-coverage": "^0.8.2",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1",
@@ -50,6 +49,8 @@
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@tableland/evm": "^4.0.0",
     "dotenv": "^16.0.3",
-    "hardhat-deploy": "^0.11.22"
+    "hardhat": "^2.12.7",
+    "hardhat-deploy": "^0.11.22",
+    "hardhat-gas-reporter": "^1.0.9"
   }
 }

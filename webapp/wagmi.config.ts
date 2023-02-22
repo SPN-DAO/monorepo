@@ -15,9 +15,9 @@ export default defineConfig({
       project: "../core",
       artifacts: "../core/artifacts",
       commands: {
-        clean: "yarn hardhat clean",
-        build: "yarn hardhat compile",
-        rebuild: "yarn hardhat compile",
+        clean: "npm run hardhat clean",
+        build: "npm run hardhat compile",
+        rebuild: "npm run hardhat compile",
       },
     }),
     react(),
