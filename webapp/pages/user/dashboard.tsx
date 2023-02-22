@@ -2,9 +2,9 @@ import { Heading } from "@chakra-ui/react";
 
 import { NextPageWithLayout } from "../_app";
 
-import CenteredCard from "~~/components/CenteredCard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import HasTokenLayout from "~~/components/layouts/HasTokenLayout";
+import CenteredCard from "~~/components/OnBoardingCenteredCard";
 
 const Dashboard: NextPageWithLayout = () => {
   return (
