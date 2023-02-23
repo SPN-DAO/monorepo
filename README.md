@@ -3,15 +3,15 @@
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/en/download/) v16.19
-- [Yarn](https://yarnpkg.com/getting-started/install) v3.4.1
+- NPM v9.4.2
 
 ## Installation
 
-`yarn install`
+`npm i`
 
 ## Generating files
 
-Before you can run the project, you need to generate some files (hardhat export for solidity and wagmi/cli generate for the frontend).
+When you make changes to the contracts, you will need to generate new typescript files for the frontend to use. This is done by running the following commands:
 
 1.  Generate solidity files, run:
 
@@ -25,10 +25,10 @@ Before you can run the project, you need to generate some files (hardhat export 
 
 1.  Start the hardhat local server by running:
 
-`yarn run core:dev`
+`npm run core:dev`
 
 ## Running the Next.js frontend
 
 1.  Start the Next.js frontend by running:
 
-`yarn run web:dev`
+`npm run web:dev`

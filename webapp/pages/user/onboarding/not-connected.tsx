@@ -1,11 +1,13 @@
-import { Box, Center, Heading, HStack, Text } from "@chakra-ui/react";
+import { Center, HStack } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
-import CenteredCard from "~~/components/CenteredCard";
+import OnBoardingCenteredCard from "~~/components/OnBoardingCenteredCard";
+import OnBoardingContentPiece from "~~/components/OnBoardingContentPiece";
+import OnBoardingHeaderComponent from "~~/components/OnBoardingHeaderComponent";
 
 const OnboardingNotConnected = () => {
   const { isConnected } = useAccount();
@@ -17,15 +19,6 @@ const OnboardingNotConnected = () => {
     }
   }, [isConnected, router]);
 
-  const infoText = (title: string, content: string) => (
-    <Box maxW={250} textAlign="center">
-      <Heading as="h3" size="md" textAlign="center" mb={2}>
-        {title}
-      </Heading>
-      <Text>{content}</Text>
-    </Box>
-  );
-
   return (
     <>
       <Head>
@@ -33,37 +26,34 @@ const OnboardingNotConnected = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <CenteredCard
+      <OnBoardingCenteredCard
         prependedContent={
-          <Box mb={16}>
-            <Heading as="h1" size="4xl" textAlign="center" mb={2}>
-              SPN DAO
-            </Heading>
-            <Heading as="h2" size="md" textAlign="center">
-              Your data is more valuable than you think
-            </Heading>
-          </Box>
+          <OnBoardingHeaderComponent
+            title="SPN DAO"
+            description="Your data is more valuable than you think"
+          />
         }
       >
         <HStack mb={20}>
-          {infoText(
-            "Control your data",
-            "Have true ownership and governance in the data economy"
-          )}
-          {infoText(
-            "Get rewards ",
-            "Get rewards in Matic whenever your data is decrypted"
-          )}
-          {infoText(
-            "Preserve privacy",
-            "Pool your anonymized transaction data with other DAO members"
-          )}
+          <OnBoardingContentPiece
+            title="Control your data"
+            content="Have true ownership and governance in the data economy"
+          />
+          <OnBoardingContentPiece
+            title="Get rewards"
+            content="Get rewards in Matic whenever your data is decrypted"
+          />
+
+          <OnBoardingContentPiece
+            title="Preserve privacy"
+            content="Pool your anonymized transaction data with other DAO members"
+          />
         </HStack>
 
         <Center>
           <ConnectButton />
         </Center>
-      </CenteredCard>
+      </OnBoardingCenteredCard>
     </>
   );
 };
