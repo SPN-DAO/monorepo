@@ -16,6 +16,8 @@ import {
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
+import theme from "~~/styles/theme";
+
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -59,9 +61,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <WagmiConfig client={wagmiClient}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <RainbowKitProvider chains={chains}>
-          <Flex minH="100vh" direction="column">
+          <Flex minH="100vh" direction="column" w="full">
             {getLayout(<Component {...pageProps} />)}
           </Flex>
         </RainbowKitProvider>
