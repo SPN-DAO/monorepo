@@ -30,7 +30,7 @@ const OnboardingNotConnected = () => {
   return (
     <>
       <Head>
-        <title>SPN DAO - Onboarding</title>
+        <title>DALN - Onboarding</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

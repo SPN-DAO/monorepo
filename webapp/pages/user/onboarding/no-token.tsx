@@ -13,11 +13,11 @@ const NoTokenPage: NextPageWithLayout = () => {
         </Heading>
 
         <Heading as="h2" size="md" textAlign="center">
-          You don&apos;t have a SPN DAO membership token yet
+          You don&apos;t have a DALN membership token yet
         </Heading>
 
         <Button mt={8} colorScheme="blue" size="lg">
-          Join SPN DAO
+          Join DALN
         </Button>
       </CenteredCard>
     </>

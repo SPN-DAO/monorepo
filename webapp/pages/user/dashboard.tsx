@@ -11,7 +11,7 @@ const Dashboard: NextPageWithLayout = () => {
     <>
       <CenteredCard>
         <Heading as="h1" size="4xl" textAlign="center" mb={2}>
-          Manage SPN DAO membership token
+          Manage DALN membership token
         </Heading>
       </CenteredCard>
     </>
