@@ -14,7 +14,7 @@ import NextLink from "next/link";
 
 import { NextPageWithLayout } from "../_app";
 
-import DashboardItem from "~~/components/DashboardItem";
+import { DashboardStat, BurnToken } from "~~/components/Dashboard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import HasTokenLayout from "~~/components/layouts/HasTokenLayout";
 
@@ -31,9 +31,7 @@ const Dashboard: NextPageWithLayout = () => {
       <Card w="full">
         <CardHeader>
           <Flex justifyContent="flex-end" alignItems="center">
-            <Button variant="outline" colorScheme="red">
-              Burn DALN token
-            </Button>
+            <BurnToken />
           </Flex>
 
           <Heading as="h1" size="md" fontWeight={500} textAlign="center" mb={2}>
@@ -44,10 +42,10 @@ const Dashboard: NextPageWithLayout = () => {
         <CardBody>
           <SimpleGrid columns={[1, 2]} spacing={5}>
             {/* TODO: Fetch info from user */}
-            <DashboardItem label="Rewards" helpText="Matic" number="1.27" />
-            <DashboardItem label="Decryption Sessions" number="5" />
-            <DashboardItem label="Token ID" number="bd847700" />
-            <DashboardItem label="DALN Contract" number="0x7580...B462C1" />
+            <DashboardStat label="Rewards" helpText="Matic" number="1.27" />
+            <DashboardStat label="Decryption Sessions" number="5" />
+            <DashboardStat label="Token ID" number="bd847700" />
+            <DashboardStat label="DALN Contract" number="0x7580...B462C1" />
           </SimpleGrid>
         </CardBody>
       </Card>
