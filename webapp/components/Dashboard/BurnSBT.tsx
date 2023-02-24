@@ -10,21 +10,18 @@ import {
 } from "@chakra-ui/react";
 import { Component, useRef } from "react";
 
-interface BurnTokenProps extends Partial<Component<typeof Button>> {
+interface BurnSBTProps extends Partial<Component<typeof Button>> {
   alertDialogProps?: Component<typeof AlertDialog>;
 }
 
-export default function BurnToken({
-  alertDialogProps,
-  ...props
-}: BurnTokenProps) {
+export default function BurnSBT({ alertDialogProps, ...props }: BurnSBTProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
 
   return (
     <>
       <Button colorScheme="red" variant="outline" onClick={onOpen} {...props}>
-        Burn DALN Token
+        Burn my SBT
       </Button>
 
       <AlertDialog
