@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Component, useRef } from "react";
 
-interface BurnTokenProps extends Component<typeof Button> {
+interface BurnTokenProps extends Partial<Component<typeof Button>> {
   alertDialogProps?: Component<typeof AlertDialog>;
 }
 
