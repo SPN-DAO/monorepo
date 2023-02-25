@@ -1,6 +1,5 @@
 import lighthouse from "@lighthouse-web3/sdk";
 import S3 from "aws-sdk/clients/s3";
-import { ethers } from "ethers";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
@@ -81,7 +80,6 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
           (err, data) => {
             if (err) {
               console.log(err);
-              res.status(500).json({ success: false });
             }
 
             const buffer = aws_client
@@ -102,5 +100,9 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
           }
         );
       });
+
+    res.status(200);
+  } else {
+    res.status(200);
   }
 }

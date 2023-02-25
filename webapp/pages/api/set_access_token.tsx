@@ -1,13 +1,6 @@
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  Configuration,
-  CountryCode,
-  DepositoryAccountSubtype,
-  PlaidApi,
-  PlaidEnvironments,
-} from "plaid";
-import axios from "axios";
+import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
 async function setToken(userId: string, token: string, itemId: string) {
   const url = `mongodb+srv://admin:${process.env.DB_PASSWORD}@spndao.vjnl9b2.mongodb.net/?retryWrites=true&w=majority`;
