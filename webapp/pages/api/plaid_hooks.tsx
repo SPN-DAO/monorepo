@@ -1,7 +1,18 @@
-import axios from "axios";
+import lighthouse from "@lighthouse-web3/sdk";
+import S3 from "aws-sdk/clients/s3";
+import { ethers } from "ethers";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
+
+const aws_client = new S3({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: process.env.S3_KEY as string,
+    secretAccessKey: process.env.S3_SECRET as string,
+  },
+});
+
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
@@ -49,24 +60,84 @@ function logHook(req: PlaidHook) {
   console.log(`webhook_code: ${req.body.webhook_code}`);
 }
 
+const sign_auth_message = async (publicKey: string) => {
+  const provider: ethers.providers.Provider =
+    new ethers.providers.JsonRpcProvider();
+  const signer: ethers.Signer = new ethers.Wallet(
+    process.env.PRIV_KEY as string,
+    provider
+  );
+  const messageRequested = (await lighthouse.getAuthMessage(publicKey)).data
+    .message;
+  const signedMessage = await signer.signMessage(messageRequested);
+  return signedMessage;
+};
+
+// path needs to be asbolute path
+const deployEncrypted = async (path: string) => {
+  const apiKey = process.env.LIGHTHOUSE_API_KEY as string;
+  const publicKey = process.env.PUBLIC_KEY as string;
+  const signed_message = await sign_auth_message(publicKey);
+
+  const response = await lighthouse.uploadEncrypted(
+    path,
+    apiKey,
+    publicKey,
+    signed_message
+  );
+  // Display response
+  console.log(response);
+  /*
+    {
+      Name: 'flow1.png',
+      Hash: 'QmQqfuFH77vsau5xpVHUfJ6mJQgiG8kDmR62rF98iSPRes',
+      Size: '31735'
+    }
+    Note: Hash in response is CID.
+  */
+};
+
 export default async function handler(req: PlaidHook, res: NextApiResponse) {
   // logHook(req);
 
   if (req.body.webhook_code === "HISTORICAL_UPDATE") {
     const access_token = await getAccessToken(req.body.item_id);
     const client = new PlaidApi(configuration);
-    console.log(`transactionsSync() called: ${access_token}`);
+
     await client
       .transactionsSync({
         access_token: access_token,
       })
       .then((response) => {
-        console.log(`transactionsSync() succeeded: ${response}`);
-        res.status(200).json({ response: response });
-      })
-      .catch((error) => {
-        console.log(`transactionsSync() failed: ${error}`);
-        res.status(500).json({ error: error });
+        aws_client.putObject(
+          {
+            Bucket: "spndao",
+            Key: `${response.data.request_id}.json`,
+            Body: JSON.stringify(response.data.added),
+          },
+          (err, data) => {
+            if (err) {
+              console.log(err);
+              res.status(500).json({ success: false });
+            }
+
+            const buffer = aws_client
+              .getObject({
+                Bucket: "spndao",
+                Key: `${response.data.request_id}.json`,
+              })
+              .createReadStream();
+
+            lighthouse
+              .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        );
       });
   }
 }
