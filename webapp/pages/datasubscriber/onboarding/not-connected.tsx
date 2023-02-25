@@ -39,7 +39,7 @@ const OnboardingNotConnected = () => {
                 description="Harvest data insights & stay compliant"
               />
               <Button colorScheme="blue" size="md">
-                Comming soon
+                Coming soon
               </Button>
             </VStack>
           }
