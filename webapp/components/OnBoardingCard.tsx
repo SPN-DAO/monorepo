@@ -16,7 +16,7 @@ const Card: React.FC<CenteredCardProps> = ({
   return (
     <Box {...props}>
       {prependedContent && <Box mb={16}>{prependedContent}</Box>}
-      <ChakraUiCard p={12}>{children}</ChakraUiCard>
+      <ChakraUiCard p={12} size="lg">{children}</ChakraUiCard>
       {appendedContent && <Box>{appendedContent}</Box>}
     </Box>
   );

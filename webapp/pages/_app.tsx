@@ -1,18 +1,17 @@
 import "@rainbow-me/rainbowkit/styles.css";
-import { ChakraProvider, Flex } from "@chakra-ui/react";
+import {
+  Center,
+  ChakraProvider,
+  CircularProgress,
+  Flex,
+} from "@chakra-ui/react";
 import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { motion, AnimatePresence } from "framer-motion";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
-import type { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  goerli,
-  localhost,
-} from "wagmi/chains";
+import { polygon, localhost, polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -29,12 +28,9 @@ type AppPropsWithLayout = AppProps & {
 const { chains, provider, webSocketProvider } = configureChains(
   [
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
-      ? [localhost, goerli]
+      ? [localhost, polygonMumbai]
       : []),
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
+    polygonMumbai,
   ],
   [
     alchemyProvider({
@@ -63,9 +59,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <WagmiConfig client={wagmiClient}>
       <ChakraProvider theme={theme}>
         <RainbowKitProvider chains={chains}>
-          <Flex minH="100vh" direction="column" w="full">
-            {getLayout(<Component {...pageProps} />)}
-          </Flex>
+          <AnimatePresence mode="wait" initial={false}>
+            <Flex minH="100vh" direction="column" w="full" bg="#F1F4F9">
+              {getLayout(<Component {...pageProps} />)}
+            </Flex>
+          </AnimatePresence>
         </RainbowKitProvider>
       </ChakraProvider>
     </WagmiConfig>
