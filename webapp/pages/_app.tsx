@@ -30,7 +30,7 @@ const { chains, provider, webSocketProvider } = configureChains(
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
       ? [localhost, polygonMumbai]
       : []),
-    polygon,
+    polygonMumbai,
   ],
   [
     alchemyProvider({
