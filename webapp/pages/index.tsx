@@ -62,7 +62,7 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>SPN DAO</title>
+        <title>DALN</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex padding={4}>
