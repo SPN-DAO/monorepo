@@ -1,4 +1,8 @@
-<svg
+import React from "react";
+
+export default function OnboardingGraphSvgComponent() {
+  return (
+    <svg
       width="500"
       height="394"
       viewBox="0 0 500 394"
@@ -81,3 +85,5 @@
         />
       </defs>
     </svg>
+  );
+}
