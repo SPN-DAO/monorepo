@@ -1,7 +1,17 @@
-import axios from "axios";
+import lighthouse from "@lighthouse-web3/sdk";
+import S3 from "aws-sdk/clients/s3";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
+
+const aws_client = new S3({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: process.env.S3_KEY as string,
+    secretAccessKey: process.env.S3_SECRET as string,
+  },
+});
+
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
@@ -55,18 +65,44 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
   if (req.body.webhook_code === "HISTORICAL_UPDATE") {
     const access_token = await getAccessToken(req.body.item_id);
     const client = new PlaidApi(configuration);
-    console.log(`transactionsSync() called: ${access_token}`);
+
     await client
       .transactionsSync({
         access_token: access_token,
       })
       .then((response) => {
-        console.log(`transactionsSync() succeeded: ${response}`);
-        res.status(200).json({ response: response });
-      })
-      .catch((error) => {
-        console.log(`transactionsSync() failed: ${error}`);
-        res.status(500).json({ error: error });
+        aws_client.putObject(
+          {
+            Bucket: "spndao",
+            Key: `${response.data.request_id}.json`,
+            Body: JSON.stringify(response.data.added),
+          },
+          (err, data) => {
+            if (err) {
+              console.log(err);
+            }
+
+            const buffer = aws_client
+              .getObject({
+                Bucket: "spndao",
+                Key: `${response.data.request_id}.json`,
+              })
+              .createReadStream();
+
+            lighthouse
+              .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        );
       });
+
+    res.status(200);
+  } else {
+    res.status(200);
   }
 }
