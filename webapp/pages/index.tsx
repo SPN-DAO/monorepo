@@ -67,11 +67,7 @@ const Home = () => {
       </Head>
       <Flex padding={4}>
         <Spacer />
-        <Link
-          as={NextLink}
-          href="/admin/onboarding/not-connected"
-          colorScheme="blue"
-        >
+        <Link as={NextLink} href="/admin" colorScheme="blue">
           DAO Admin
         </Link>
       </Flex>
