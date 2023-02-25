@@ -58,7 +58,7 @@ const HasTokenLayout = ({ children }: ConnectedLayoutProps) => {
 
   if (balanceQuery?.data?.value.gt(0))
     return (
-      <Flex minH="100vh" direction="column">
+      <Flex flex={1} direction="column" w="full">
         {children}
       </Flex>
     );

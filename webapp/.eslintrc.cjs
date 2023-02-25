@@ -173,6 +173,7 @@ module.exports = {
         ignoreIIFE: true,
       },
     ],
+    "react/no-unescaped-entities": "warn",
   },
   overrides: [
     {
