@@ -60,43 +60,6 @@ function logHook(req: PlaidHook) {
   console.log(`webhook_code: ${req.body.webhook_code}`);
 }
 
-const sign_auth_message = async (publicKey: string) => {
-  const provider: ethers.providers.Provider =
-    new ethers.providers.JsonRpcProvider();
-  const signer: ethers.Signer = new ethers.Wallet(
-    process.env.PRIV_KEY as string,
-    provider
-  );
-  const messageRequested = (await lighthouse.getAuthMessage(publicKey)).data
-    .message;
-  const signedMessage = await signer.signMessage(messageRequested);
-  return signedMessage;
-};
-
-// path needs to be asbolute path
-const deployEncrypted = async (path: string) => {
-  const apiKey = process.env.LIGHTHOUSE_API_KEY as string;
-  const publicKey = process.env.PUBLIC_KEY as string;
-  const signed_message = await sign_auth_message(publicKey);
-
-  const response = await lighthouse.uploadEncrypted(
-    path,
-    apiKey,
-    publicKey,
-    signed_message
-  );
-  // Display response
-  console.log(response);
-  /*
-    {
-      Name: 'flow1.png',
-      Hash: 'QmQqfuFH77vsau5xpVHUfJ6mJQgiG8kDmR62rF98iSPRes',
-      Size: '31735'
-    }
-    Note: Hash in response is CID.
-  */
-};
-
 export default async function handler(req: PlaidHook, res: NextApiResponse) {
   // logHook(req);
 
