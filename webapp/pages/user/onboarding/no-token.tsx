@@ -1,26 +1,105 @@
-import { Button, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  WrapItem,
+  Link,
+} from "@chakra-ui/react";
+import { useState } from "react";
 
+import FollowDalnFooter from "~~/components/FollowDalnFooter";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
-import CenteredCard from "~~/components/OnBoardingCenteredCard";
+import Card from "~~/components/OnBoardingCard";
 import { NextPageWithLayout } from "~~/pages/_app";
+import theme from "~~/styles/theme";
 
 const NoTokenPage: NextPageWithLayout = () => {
+  const [acceptTerms, setAcceptTerms] = useState(false);
   return (
-    <>
-      <CenteredCard>
-        <Heading as="h1" size="4xl" textAlign="center" mb={2}>
-          Join the party 🥳
-        </Heading>
+    <Center
+      sx={{
+        flex: 1,
+      }}
+    >
+      <Box alignSelf="center" width="80vw">
+        <Text textAlign="center" fontSize="lg" mb={8} color="#4A5568">
+          Not a DALN member yet?
+        </Text>
+        <Card>
+          <Heading as="h1" size="lg" textAlign="center" mb={2}>
+            Join the party 🥳
+          </Heading>
+          <Heading as="h2" size="md" textAlign="center" mb={10}>
+            for true ownership and monetization of your data
+          </Heading>
+          <WrapItem alignSelf="center">
+            <Box justifyContent="start" alignItems="start">
+              <HStack spacing="8px" alignItems="end" mb={6}>
+                <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
+                  1. Upload & Encrypt
+                </Heading>
+                <Text fontSize="lg">credit card transactions</Text>
+              </HStack>
+              <HStack spacing="8px" alignItems="end" mb={6}>
+                <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
+                  2. Mint
+                </Heading>
+                <Text fontSize="lg">credit card transactions</Text>
+              </HStack>
+              <HStack spacing="8px" alignItems="end" mb={6}>
+                <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
+                  3. Get rewards
+                </Heading>
+                <Text fontSize="lg">for decrypted data</Text>
+              </HStack>
+              <Flex mb={6}>
+                <Checkbox
+                  isChecked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                />
+                <Text ml={2} fontSize="sm">
+                  By checking the box, I agree to DALN's{" "}
+                  <Link
+                    href="https://www.google.com"
+                    color={theme.colors.primary["500"]}
+                    isExternal
+                  >
+                    Terms of Use
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    href="https://www.google.com"
+                    color={theme.colors.primary["500"]}
+                    isExternal
+                  >
+                    Privacy Policy.
+                  </Link>
+                </Text>
+              </Flex>
+            </Box>
+          </WrapItem>
 
-        <Heading as="h2" size="md" textAlign="center">
-          You don&apos;t have a DALN membership token yet
-        </Heading>
-
-        <Button mt={8} colorScheme="blue" size="lg">
-          Join DALN
-        </Button>
-      </CenteredCard>
-    </>
+          <Flex justifyContent="center">
+            <Button isDisabled={!acceptTerms} size="lg" maxWidth={382} flex={1}>
+              Join DALN
+            </Button>
+          </Flex>
+          <Flex justifyContent="center" mt={8}>
+            <Text ml={2} maxWidth={720} fontSize="sm" align="center">
+              Your data will be temporarily stored on a cloud server and then
+              encrypted and uploaded to IPFS. The resulting IPFS link is
+              immutable, and the data on the cloud server will be deleted.
+            </Text>
+          </Flex>
+        </Card>
+        <FollowDalnFooter />
+      </Box>
+    </Center>
   );
 };
 

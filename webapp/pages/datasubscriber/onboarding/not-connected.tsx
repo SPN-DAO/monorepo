@@ -1,4 +1,4 @@
-import { Box, Button, Center, VStack } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, HStack, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -6,8 +6,8 @@ import { useAccount } from "wagmi";
 
 import OnBoardingCard from "~~/components/OnBoardingCard";
 import OnBoardingContentPiece from "~~/components/OnBoardingContentPiece";
+import OnboardingGraphSvgComponent from "~~/components/OnboardingGraphSvgComponent";
 import OnBoardingHeaderComponent from "~~/components/OnBoardingHeaderComponent";
-
 const OnboardingNotConnected = () => {
   const { isConnected } = useAccount();
   const router = useRouter();
@@ -39,33 +39,33 @@ const OnboardingNotConnected = () => {
                 description="Harvest data insights & stay compliant"
               />
               <Button colorScheme="blue" size="md">
-                Comming soon
+                Coming soon
               </Button>
             </VStack>
           }
         >
-          <Box flex="1">
-            <OnBoardingContentPiece
-              textAlign="start"
-              title="Control your data"
-              content="Have true ownership and governance in the data economy"
-              mb={10}
-            />
-            <OnBoardingContentPiece
-              textAlign="start"
-              title="Get rewards"
-              content="Get rewards in Matic whenever your data is decrypted"
-              mb={10}
-            />
-            <OnBoardingContentPiece
-              textAlign="start"
-              title="Preserve privacy"
-              content="Pool your anonymized transaction data with other DAO members"
-            />
-          </Box>
-          <Box flex="1">
-            {/* TODO: Add svg component. KEVIN Which is the best way to do this in REACT? */}
-          </Box>
+          <HStack>
+            <Box flex={1}>
+              <OnBoardingContentPiece
+                textAlign="start"
+                title="Control your data"
+                content="Have true ownership and governance in the data economy"
+                mb={10}
+              />
+              <OnBoardingContentPiece
+                textAlign="start"
+                title="Get rewards"
+                content="Get rewards in Matic whenever your data is decrypted"
+                mb={10}
+              />
+              <OnBoardingContentPiece
+                textAlign="start"
+                title="Preserve privacy"
+                content="Pool your anonymized transaction data with other DAO members"
+              />
+            </Box>
+            <OnboardingGraphSvgComponent />
+          </HStack>
         </OnBoardingCard>
       </Center>
     </>
