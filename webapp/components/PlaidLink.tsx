@@ -1,7 +1,5 @@
 import axios from "axios";
 import React from "react";
-// Not sure why this is needed, but it is.
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { usePlaidLink } from "react-plaid-link";
 
 interface LinkProps {
@@ -19,6 +17,7 @@ const Link: React.FC<LinkProps> = (props: LinkProps) => {
     },
     []
   );
+
   const config: Parameters<typeof usePlaidLink>[0] = {
     token: props.linkToken,
     onSuccess: onSuccess,

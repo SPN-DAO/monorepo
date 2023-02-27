@@ -10,13 +10,14 @@ import { useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
 
 import DelayedProgressBar from "../common/DelayedProgressBar";
+import FollowDalnFooter from "../FollowDalnFooter";
 
-interface ConnectedLayoutProps {
+interface HasTokenLayoutProps {
   children: React.ReactNode;
 }
 
 // This is a layout component that will be used in the pages that require the user to have a token. If the user does not have the token, it will redirect to the token creation page.
-const HasTokenLayout = ({ children }: ConnectedLayoutProps) => {
+const HasTokenLayout = ({ children }: HasTokenLayoutProps) => {
   const { address } = useAccount();
 
   const balanceQuery = useBalance({

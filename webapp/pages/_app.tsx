@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import { ReactElement, ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { polygon, localhost, polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
@@ -24,6 +25,7 @@ export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+const queryClient = new QueryClient();
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -60,9 +62,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <ChakraProvider theme={theme}>
         <RainbowKitProvider chains={chains}>
           <AnimatePresence mode="wait" initial={false}>
-            <Flex minH="100vh" direction="column" w="full" bg="#F1F4F9">
-              {getLayout(<Component {...pageProps} />)}
-            </Flex>
+            <QueryClientProvider client={queryClient}>
+              <Flex minH="100vh" direction="column" w="full" bg="#F1F4F9">
+                {getLayout(<Component {...pageProps} />)}
+              </Flex>
+            </QueryClientProvider>
           </AnimatePresence>
         </RainbowKitProvider>
       </ChakraProvider>

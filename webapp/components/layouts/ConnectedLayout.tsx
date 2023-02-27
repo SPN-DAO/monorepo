@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import DelayedProgressBar from "../common/DelayedProgressBar";
+import FollowDalnFooter from "../FollowDalnFooter";
 import NavBar from "../NavBar";
 
 interface ConnectedLayoutProps {
@@ -26,6 +27,7 @@ const ConnectedLayout = ({ children }: ConnectedLayoutProps) => {
       <Flex minH="100vh" direction="column">
         <NavBar />
         {children}
+        <FollowDalnFooter />
       </Flex>
     );
   }

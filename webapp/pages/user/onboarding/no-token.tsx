@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   Checkbox,
   Flex,
@@ -10,16 +9,23 @@ import {
   WrapItem,
   Link,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import FollowDalnFooter from "~~/components/FollowDalnFooter";
+import JoinDALNButton from "~~/components/JoinDALNButton";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import Card from "~~/components/OnBoardingCard";
+import useMutationCreateToken from "~~/hooks/useMutationCreateToken";
 import { NextPageWithLayout } from "~~/pages/_app";
 import theme from "~~/styles/theme";
 
 const NoTokenPage: NextPageWithLayout = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const { isLoading, isError, data, mutate } = useMutationCreateToken({});
+  const linkToken = data?.data?.link_token || null;
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
+
   return (
     <Center
       sx={{
@@ -49,7 +55,9 @@ const NoTokenPage: NextPageWithLayout = () => {
                 <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
                   2. Mint
                 </Heading>
-                <Text fontSize="lg">credit card transactions</Text>
+                <Text fontSize="lg">
+                  a non-transferrable DAO membership token
+                </Text>
               </HStack>
               <HStack spacing="8px" alignItems="end" mb={6}>
                 <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
@@ -85,9 +93,13 @@ const NoTokenPage: NextPageWithLayout = () => {
           </WrapItem>
 
           <Flex justifyContent="center">
-            <Button isDisabled={!acceptTerms} size="lg" maxWidth={382} flex={1}>
+            <JoinDALNButton
+              linkToken={linkToken}
+              isDisabled={!acceptTerms || isError}
+              isLoading={isLoading}
+            >
               Join DALN
-            </Button>
+            </JoinDALNButton>
           </Flex>
           <Flex justifyContent="center" mt={8}>
             <Text ml={2} maxWidth={720} fontSize="sm" align="center">
@@ -97,7 +109,6 @@ const NoTokenPage: NextPageWithLayout = () => {
             </Text>
           </Flex>
         </Card>
-        <FollowDalnFooter />
       </Box>
     </Center>
   );
