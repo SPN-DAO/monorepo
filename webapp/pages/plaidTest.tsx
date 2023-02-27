@@ -1,8 +1,14 @@
+import { useEffect } from "react";
+
 import Link from "../components/PlaidLink";
 
-import useCreateLinkToken from "~~/hooks/useCreateLinkToken";
+import useMutationCreateToken from "~~/hooks/useMutationCreateToken";
 
 export default function Home() {
-  const { linkToken } = useCreateLinkToken();
+  const { data, mutate } = useMutationCreateToken({});
+  const linkToken = data?.data?.link_token || null;
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
   return linkToken != null ? <Link linkToken={linkToken} /> : <></>;
 }

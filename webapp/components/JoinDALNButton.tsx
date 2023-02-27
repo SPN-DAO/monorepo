@@ -1,32 +1,36 @@
 import { Button, ButtonProps, ChakraProps, Flex } from "@chakra-ui/react";
-import axios from "axios";
 import { useCallback } from "react";
 import { usePlaidLink } from "react-plaid-link";
 
+import useMutationSetAccessToken from "~~/hooks/useMutationSetAccessToken";
+
 interface JoinDALNButtonProps extends ButtonProps {
   linkToken: string | null;
-  onSuccess?: () => void;
+  onSuccess?: (data: any, variables: any, context: any) => void;
 }
 export default function JoinDALNButton({
-  linkToken,
+  linkToken = null,
   onClick = () => {},
   isDisabled,
   onSuccess = () => {},
+  isLoading = false,
   ...props
 }: JoinDALNButtonProps) {
+  const { mutateAsync, isLoading: isLoadingSetAccessToken } =
+    useMutationSetAccessToken({
+      onSuccess(data, variables, context) {
+        onSuccess(data, variables, context);
+      },
+      onError(error) {
+        console.log(`axios.post() failed: ${error}`);
+      },
+    });
   const sendPublicTokenToBackend = useCallback(
     async (public_token: string, metadata: any) => {
       // send public_token to server to exchange for access_token and store in db
-      await axios
-        .post("/api/set_access_token", { public_token })
-        .then(() => {
-          onSuccess();
-        })
-        .catch((error) => {
-          console.log(`axios.post() failed: ${error}`);
-        });
+      await mutateAsync(public_token);
     },
-    [onSuccess]
+    [mutateAsync]
   );
 
   const config: Parameters<typeof usePlaidLink>[0] = {
@@ -40,6 +44,7 @@ export default function JoinDALNButton({
         size="lg"
         maxWidth={382}
         flex={1}
+        isLoading={isLoading || isLoadingSetAccessToken}
         isDisabled={!linkToken || !ready || isDisabled}
         onClick={(e) => {
           open();

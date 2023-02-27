@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   Checkbox,
   Flex,
@@ -10,18 +9,22 @@ import {
   WrapItem,
   Link,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import JoinDALNButton from "~~/components/JoinDALNButton";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import Card from "~~/components/OnBoardingCard";
-import useCreateLinkToken from "~~/hooks/useCreateLinkToken";
+import useMutationCreateToken from "~~/hooks/useMutationCreateToken";
 import { NextPageWithLayout } from "~~/pages/_app";
 import theme from "~~/styles/theme";
 
 const NoTokenPage: NextPageWithLayout = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const { linkToken } = useCreateLinkToken();
+  const { isLoading, isError, data, mutate } = useMutationCreateToken({});
+  const linkToken = data?.data?.link_token || null;
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
 
   return (
     <Center
@@ -90,7 +93,11 @@ const NoTokenPage: NextPageWithLayout = () => {
           </WrapItem>
 
           <Flex justifyContent="center">
-            <JoinDALNButton linkToken={linkToken} isDisabled={!acceptTerms}>
+            <JoinDALNButton
+              linkToken={linkToken}
+              isDisabled={!acceptTerms || isError}
+              isLoading={isLoading}
+            >
               Join DALN
             </JoinDALNButton>
           </Flex>
