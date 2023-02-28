@@ -9,6 +9,7 @@ import {
   WrapItem,
   Link,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import JoinDALNButton from "~~/components/JoinDALNButton";
@@ -22,6 +23,8 @@ const NoTokenPage: NextPageWithLayout = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const { isLoading, isError, data, mutate } = useMutationCreateToken({});
   const linkToken = data?.data?.link_token || null;
+  const router = useRouter();
+
   useEffect(() => {
     mutate();
   }, [mutate]);
@@ -97,6 +100,9 @@ const NoTokenPage: NextPageWithLayout = () => {
               linkToken={linkToken}
               isDisabled={!acceptTerms || isError}
               isLoading={isLoading}
+              onSuccess={() => {
+                void router.replace("user/onboarding/upload-data");
+              }}
             >
               Join DALN
             </JoinDALNButton>

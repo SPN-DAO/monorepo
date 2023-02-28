@@ -22,6 +22,7 @@ export default function JoinDALNButton({
         onSuccess(data, variables, context);
       },
       onError(error) {
+        onSuccess();
         console.log(`axios.post() failed: ${error}`);
       },
     });
