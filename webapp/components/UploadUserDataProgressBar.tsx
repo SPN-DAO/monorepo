@@ -1,4 +1,4 @@
-import { Center, Circle, Flex, Progress } from "@chakra-ui/react";
+import { Box, Center, Circle, Flex, Progress, Wrap } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 
 import theme from "~~/styles/theme";
@@ -29,9 +29,9 @@ const PointAndLabel = ({
       <Center
         position="absolute"
         left={`${position}%`}
-        width={"600px"}
+        width={"200px"}
         bottom={10}
-        marginX={"-300px"}
+        marginX={"-100px"}
       >
         {label}
       </Center>
@@ -47,7 +47,13 @@ const UploadUserDataProgressBar = (
   const { progress } = props;
 
   return (
-    <Flex mt={28} position={"relative"} alignItems={"center"} height="24px">
+    <Flex
+      mt={28}
+      position={"relative"}
+      alignItems={"center"}
+      height="24px"
+      marginX={10}
+    >
       <PointAndLabel progress={progress} position={0} label={"Upload"} />
       <PointAndLabel
         progress={progress}

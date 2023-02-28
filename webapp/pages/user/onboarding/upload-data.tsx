@@ -1,11 +1,23 @@
-import { Box, Center, Heading, Text, Spinner, Card } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Heading,
+  Text,
+  Spinner,
+  Card,
+  Button,
+  Flex,
+  Container,
+} from "@chakra-ui/react";
 import { useState } from "react";
 
+import DataBaseSvgComponent from "~~/components/DataBaseSvgComponent";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
+import SuccessSvgComponent from "~~/components/SuccessSvgComponent";
 import UploadUserDataProgressBar from "~~/components/UploadUserDataProgressBar";
 import { NextPageWithLayout } from "~~/pages/_app";
 
-const STRINGS = [
+const HEADER_STRINGS = [
   {
     title: "Processing...",
     subtitle: "Your file will be encrypted immediately after uploading process",
@@ -37,7 +49,11 @@ const STRINGS = [
   },
 ];
 const UploadDataPage: NextPageWithLayout = () => {
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(70);
+  const [waitingMint, setWaitingMint] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const isMint = progress > 67;
 
   return (
     <Center
@@ -45,7 +61,7 @@ const UploadDataPage: NextPageWithLayout = () => {
         flex: 1,
       }}
     >
-      <Box alignSelf="center" width="80vw">
+      <Box alignSelf="center" width="80vw" overflow={"hidden"}>
         <Heading as="h1" size="lg" textAlign="center" mb={2}>
           Processing...
         </Heading>
@@ -53,30 +69,74 @@ const UploadDataPage: NextPageWithLayout = () => {
           Your file will be encrypted immediately after uploading process
         </Text>
         <Center alignItems="center">
-          <Card
-            paddingY={87}
-            maxWidth={680}
-            flex={1}
-            borderStyle={"dashed"}
-            borderWidth={1}
-            borderColor={"rgba(0, 0, 0, 0.3)"}
-          >
-            <Spinner
-              alignSelf="center"
-              emptyColor="rgba(64, 117, 255, 0.2)"
-              color="#4075FF"
-              mb={6}
-            />
-
-            <Text textAlign="center" fontSize="md" mb={1} color="#4A5568">
-              This may take a while...
-            </Text>
-            <Text textAlign="center" fontSize="md" color="#4A5568">
-              Please do not close your browser
-            </Text>
-          </Card>
+          {success ? (
+            <Container>
+              <Flex flex={1} justifyContent="center">
+                <SuccessSvgComponent />
+              </Flex>
+              <Flex flex={1} justifyContent="center" mt={20}>
+                <Button maxWidth={320} size="lg" flex={1} mb={2}>
+                  View in dashboard
+                </Button>
+              </Flex>
+            </Container>
+          ) : (
+            <Card
+              height={"300px"}
+              maxWidth={"680px"}
+              flex={1}
+              borderStyle={isMint ? undefined : "dashed"}
+              borderWidth={isMint ? undefined : 1}
+              borderColor={isMint ? undefined : "rgba(0, 0, 0, 0.3)"}
+              justifyContent="center"
+            >
+              {isMint ? (
+                <Container>
+                  <Center>
+                    <DataBaseSvgComponent />
+                  </Center>
+                  <Text textAlign="center" fontSize="md" color="#4A5568">
+                    The token is free to mint but you will pay a small gas fee
+                    in Matic
+                  </Text>
+                  <Flex flex={1} justifyContent="center" mt={10}>
+                    <Button
+                      maxWidth={320}
+                      size="lg"
+                      flex={1}
+                      mb={2}
+                      isDisabled={waitingMint}
+                    >
+                      {waitingMint ? "Waiting for approval..." : "Mint token"}
+                    </Button>
+                  </Flex>
+                </Container>
+              ) : (
+                <Container centerContent>
+                  <Spinner
+                    alignSelf="center"
+                    emptyColor="rgba(64, 117, 255, 0.2)"
+                    color="#4075FF"
+                    mb={6}
+                    mt={"69px"}
+                  />
+                  <Text textAlign="center" fontSize="md" mb={1} color="#4A5568">
+                    This may take a while...
+                  </Text>{" "}
+                  <Text
+                    textAlign="center"
+                    fontSize="md"
+                    color="#4A5568"
+                    mb={"69px"}
+                  >
+                    Please do not close your browser
+                  </Text>
+                </Container>
+              )}
+            </Card>
+          )}
         </Center>
-        <UploadUserDataProgressBar progress={progress} />
+        {success ? null : <UploadUserDataProgressBar progress={progress} />}
       </Box>
     </Center>
   );
