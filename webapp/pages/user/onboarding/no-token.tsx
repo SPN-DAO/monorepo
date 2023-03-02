@@ -17,7 +17,6 @@ import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import Card from "~~/components/OnBoardingCard";
 import useMutationCreateToken from "~~/hooks/useMutationCreateToken";
 import { NextPageWithLayout } from "~~/pages/_app";
-import theme from "~~/styles/theme";
 
 const NoTokenPage: NextPageWithLayout = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -49,13 +48,13 @@ const NoTokenPage: NextPageWithLayout = () => {
           <WrapItem alignSelf="center">
             <Box justifyContent="start" alignItems="start">
               <HStack spacing="8px" alignItems="end" mb={6}>
-                <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
+                <Heading color={"primary.500"} as="h1" size="xl">
                   1. Upload & Encrypt
                 </Heading>
                 <Text fontSize="lg">credit card transactions</Text>
               </HStack>
               <HStack spacing="8px" alignItems="end" mb={6}>
-                <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
+                <Heading color={"primary.500"} as="h1" size="xl">
                   2. Mint
                 </Heading>
                 <Text fontSize="lg">
@@ -63,7 +62,7 @@ const NoTokenPage: NextPageWithLayout = () => {
                 </Text>
               </HStack>
               <HStack spacing="8px" alignItems="end" mb={6}>
-                <Heading color={theme.colors.primary["500"]} as="h1" size="xl">
+                <Heading color={"primary.500"} as="h1" size="xl">
                   3. Get rewards
                 </Heading>
                 <Text fontSize="lg">for decrypted data</Text>
@@ -77,7 +76,7 @@ const NoTokenPage: NextPageWithLayout = () => {
                   By checking the box, I agree to DALN's{" "}
                   <Link
                     href="https://www.google.com"
-                    color={theme.colors.primary["500"]}
+                    color={"primary.500"}
                     isExternal
                   >
                     Terms of Use
@@ -85,7 +84,7 @@ const NoTokenPage: NextPageWithLayout = () => {
                   and{" "}
                   <Link
                     href="https://www.google.com"
-                    color={theme.colors.primary["500"]}
+                    color={"primary.500"}
                     isExternal
                   >
                     Privacy Policy.

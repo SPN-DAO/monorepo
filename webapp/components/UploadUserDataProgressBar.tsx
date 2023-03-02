@@ -1,7 +1,5 @@
-import { Box, Center, Circle, Flex, Progress, Wrap } from "@chakra-ui/react";
+import { Center, Circle, Flex, Progress } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
-
-import theme from "~~/styles/theme";
 
 const PointAndLabel = ({
   label,
@@ -21,9 +19,7 @@ const PointAndLabel = ({
         left={`${position}%`}
         marginX={"-12px"}
         zIndex={1}
-        borderColor={
-          progress < position ? "#A7A7A7" : theme.colors.primary["500"]
-        }
+        borderColor={progress < position ? "#A7A7A7" : "primary.500"}
         borderWidth={progress < position ? 2 : 3}
       />
       <Center
@@ -45,6 +41,8 @@ const UploadUserDataProgressBar = (
   }>
 ) => {
   const { progress } = props;
+  const oneThird = 100 / 3;
+  const twoThirds = (100 / 3) * 2;
 
   return (
     <Flex
@@ -57,12 +55,12 @@ const UploadUserDataProgressBar = (
       <PointAndLabel progress={progress} position={0} label={"Upload"} />
       <PointAndLabel
         progress={progress}
-        position={100 / 3}
+        position={oneThird}
         label={"Encrypt & Store"}
       />
       <PointAndLabel
         progress={progress}
-        position={(100 / 3) * 2}
+        position={twoThirds}
         label={"Mint SBT"}
       />
       <PointAndLabel progress={progress} position={100} label={"Complete"} />
