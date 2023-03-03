@@ -6,7 +6,7 @@ import useMutationSetAccessToken from "~~/hooks/useMutationSetAccessToken";
 
 interface JoinDALNButtonProps extends ButtonProps {
   linkToken: string | null;
-  onSuccess?: (data: any, variables: any, context: any) => void;
+  onSuccess?: (data?: any, variables?: any, context?: any) => void;
 }
 export default function JoinDALNButton({
   linkToken = null,

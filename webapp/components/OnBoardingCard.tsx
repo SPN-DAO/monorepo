@@ -1,7 +1,12 @@
-import { Box, Card as ChakraUiCard, ChakraProps } from "@chakra-ui/react";
+import {
+  Box,
+  BoxProps,
+  Card as ChakraUiCard,
+  ChakraProps,
+} from "@chakra-ui/react";
 import React from "react";
 
-interface CenteredCardProps extends ChakraProps {
+interface CenteredCardProps extends BoxProps {
   children: React.ReactNode;
   prependedContent?: React.ReactNode;
   appendedContent?: React.ReactNode;
@@ -16,7 +21,9 @@ const Card: React.FC<CenteredCardProps> = ({
   return (
     <Box {...props}>
       {prependedContent && <Box mb={16}>{prependedContent}</Box>}
-      <ChakraUiCard p={12} size="lg">{children}</ChakraUiCard>
+      <ChakraUiCard p={12} size="lg">
+        {children}
+      </ChakraUiCard>
       {appendedContent && <Box>{appendedContent}</Box>}
     </Box>
   );
