@@ -1,17 +1,13 @@
 import {
-  Box,
-  Button,
   Card,
   CardBody,
   CardHeader,
   Container,
-  Flex,
   Heading,
-  SimpleGrid,
 } from "@chakra-ui/react";
 import Head from "next/head";
 
-import { DashboardStat, BurnSBT } from "~~/components/Dashboard";
+import { AdminDataTable } from "~~/components/AdminDashboard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import NavBar from "~~/components/NavBar";
 import PageTransition from "~~/components/PageTransition";
@@ -32,7 +28,7 @@ const AdminDashboard: NextPageWithLayout = () => {
             lg: 24,
           }}
         >
-          <Card w="full">
+          <Card w="full" size="lg">
             <CardHeader>
               <Heading
                 as="h1"
@@ -45,7 +41,9 @@ const AdminDashboard: NextPageWithLayout = () => {
               </Heading>
             </CardHeader>
 
-            <CardBody>TODO: Table</CardBody>
+            <CardBody>
+              <AdminDataTable />
+            </CardBody>
           </Card>
         </Container>
       </PageTransition>
