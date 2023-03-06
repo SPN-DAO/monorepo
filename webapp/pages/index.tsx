@@ -99,6 +99,7 @@ const Home = () => {
         backgroundImage: `url(${`/Gradient.png`})`,
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
+        backgroundSize: "cover",
       }}
     >
       <Head>
