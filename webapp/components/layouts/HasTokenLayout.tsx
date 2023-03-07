@@ -10,7 +10,6 @@ import { useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
 
 import DelayedProgressBar from "../common/DelayedProgressBar";
-import FollowDalnFooter from "../FollowDalnFooter";
 
 interface HasTokenLayoutProps {
   children: React.ReactNode;
