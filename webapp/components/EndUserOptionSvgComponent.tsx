@@ -7,6 +7,7 @@ export default function EndUserOptionSvgComponent() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
+      id="thisone"
     >
       <rect y="59" width="91" height="96.5" fill="url(#pattern0)" />
       <rect x="107" y="120" width="98" height="128" fill="url(#pattern1)" />
