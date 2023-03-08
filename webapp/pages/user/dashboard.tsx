@@ -36,7 +36,7 @@ const Dashboard: NextPageWithLayout = () => {
   const { address } = useAccount();
 
   const findByAddress = encodeURIComponent(
-    ` WHERE address=CAST("${address}" as text)`
+    ` WHERE address=CAST('${address}' as text)`
   );
 
   const tablelandMetadata = useQuery(

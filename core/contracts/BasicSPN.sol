@@ -48,7 +48,7 @@ contract Basic_SPN_Factory is ERC721Burnable, ERC721URIStorage, Ownable, Reentra
     );
   }
 
-  function safeMint(address to, string memory cid) public returns (uint256) {
+  function safeMint(address to, string memory cid) public hasNoTokens returns (uint256) {
     uint256 newItemId = _tokenIds.current();
     _tableland.runSQL(
       address(this),

@@ -9,6 +9,7 @@ import {
   Flex,
   Container,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -101,9 +102,11 @@ const UploadDataPage: NextPageWithLayout = () => {
                 <SuccessSvgComponent />
               </Flex>
               <Flex flex={1} justifyContent="center" mt={20}>
-                <Button maxWidth={320} size="lg" flex={1} mb={2}>
-                  View in dashboard
-                </Button>
+                <Link href="/user/dashboard">
+                  <Button maxWidth={320} size="lg" flex={1} mb={2}>
+                    View in dashboard
+                  </Button>
+                </Link>
               </Flex>
             </Container>
           ) : (
