@@ -11,21 +11,17 @@ import { useEffect, useState } from "react";
 import { erc20ABI, useAccount, useContractRead } from "wagmi";
 
 import PageTransition from "~~/components/PageTransition";
-import { SpendToken } from "~~/oldContracts";
 
 export default function UserHome() {
   const { address } = useAccount();
 
   const balanceQuery = useContractRead({
-    // TODO: Replace with new contract address
-    address: SpendToken.polygonMumbai as `0x${string}`,
+    address: process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS as `0x${string}`,
     abi: erc20ABI,
     functionName: "balanceOf",
     args: [address || "0x0"],
     enabled: !!address,
   });
-
-  console.log("address", address);
 
   const router = useRouter();
 

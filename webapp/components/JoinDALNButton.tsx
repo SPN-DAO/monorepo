@@ -19,6 +19,8 @@ export default function JoinDALNButton({
   const { mutateAsync, isLoading: isLoadingSetAccessToken } =
     useMutationSetAccessToken({
       onSuccess(data, variables, context) {
+        console.log("setAccessToken data", data);
+        sessionStorage.setItem("plaidItemId", data.plaidItemId);
         onSuccess(data, variables, context);
       },
       onError(error) {

@@ -14,6 +14,17 @@
     "deploy:mumbai": "hardhat deploy --network mumbai --export-all ./generated/hardhat_contracts.json",
     "generate": "hardhat export --export-all ./generated/hardhat_contracts.json"
   },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.sol",
+        "options": {
+          "tabWidth": 2,
+          "printWidth": 120
+        }
+      }
+    ]
+  },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",

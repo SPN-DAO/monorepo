@@ -12,16 +12,16 @@ const func: DeployFunction = async (
   const BasicSPN = await deploy("Basic_SPN_Factory", {
     from: deployer,
     log: true,
-    waitConfirmations: 3,
+    waitConfirmations: 5,
   });
 
   try {
-    await hre.run('verify:verify', {
+    await hre.run("verify:verify", {
       address: BasicSPN.address,
     });
-    console.log('Verified BasicSPN');
+    console.log("Verified BasicSPN");
   } catch (err) {
-    console.log('Failed to verify BasicSPN', err);
+    console.log("Failed to verify BasicSPN", err);
   }
 };
 export default func;

@@ -9,12 +9,19 @@ import {
   Flex,
   Container,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 
 import DataBaseSvgComponent from "~~/components/DataBaseSvgComponent";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import SuccessSvgComponent from "~~/components/SuccessSvgComponent";
 import UploadUserDataProgressBar from "~~/components/UploadUserDataProgressBar";
+import {
+  basicSpnFactoryABI,
+  spnFactoryABI,
+  usePrepareBasicSpnFactorySafeMint,
+} from "~~/generated/wagmiTypes";
+import usePrepareWriteAndWaitTx from "~~/hooks/usePrepareWriteAndWaitTx";
 import { NextPageWithLayout } from "~~/pages/_app";
 
 const HEADER_STRINGS = [
@@ -50,10 +57,29 @@ const HEADER_STRINGS = [
 ];
 const UploadDataPage: NextPageWithLayout = () => {
   const [progress, setProgress] = useState(70);
-  const [waitingMint, setWaitingMint] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const isMint = progress > 67;
+
+  const { address: userAddress } = useAccount();
+
+  const cid = sessionStorage.getItem("plaidItemId");
+
+  const mintToken = usePrepareWriteAndWaitTx({
+    address: process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS as `0x${string}`,
+    abi: basicSpnFactoryABI,
+    functionName: "safeMint",
+    args: [userAddress, cid],
+    enabled:
+      !!process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS && !!userAddress && !!cid,
+  });
+
+  useEffect(() => {
+    if (mintToken.isSuccess) {
+      setProgress(100);
+      setSuccess(true);
+    }
+  }, [mintToken.isSuccess]);
 
   return (
     <Center
@@ -105,9 +131,13 @@ const UploadDataPage: NextPageWithLayout = () => {
                       size="lg"
                       flex={1}
                       mb={2}
-                      isDisabled={waitingMint}
+                      isDisabled={!mintToken.write}
+                      isLoading={mintToken.isLoading}
+                      onClick={() => {
+                        mintToken.write && mintToken.write();
+                      }}
                     >
-                      {waitingMint ? "Waiting for approval..." : "Mint token"}
+                      Mint token
                     </Button>
                   </Flex>
                 </Container>
