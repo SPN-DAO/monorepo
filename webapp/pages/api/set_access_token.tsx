@@ -32,19 +32,22 @@ export default async function handler(
     basePath: PlaidEnvironments.sandbox,
     baseOptions: {
       headers: {
-        "PLAID-CLIENT-ID": process.env.NEXT_PUBLIC_PLAID_CLIENT_ID,
-        "PLAID-SECRET": process.env.NEXT_PUBLIC_PLAID_SECRET,
+        "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+        "PLAID-SECRET": process.env.PLAID_SECRET,
       },
     },
   });
 
   const client = new PlaidApi(configuration);
 
+  let plaidItemId = "";
+
   await client
     .itemPublicTokenExchange({
       public_token: req.body.public_token,
     })
     .then(async (response) => {
+      plaidItemId = response.data.item_id;
       await setToken(
         "abc",
         response.data.access_token,
@@ -70,6 +73,6 @@ export default async function handler(
       res.status(500).json({ error: error });
     })
     .finally(() => {
-      res.status(200).json({ success: true });
+      res.status(200).json({ success: true, plaidItemId });
     });
 }

@@ -13,7 +13,6 @@ import Head from "next/head";
 
 import { DashboardStat, BurnSBT } from "~~/components/Dashboard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
-import HasTokenLayout from "~~/components/layouts/HasTokenLayout";
 import NavBar from "~~/components/NavBar";
 import PageTransition from "~~/components/PageTransition";
 import { NextPageWithLayout } from "~~/pages/_app";
@@ -55,11 +54,7 @@ const AdminDashboard: NextPageWithLayout = () => {
 };
 
 AdminDashboard.getLayout = function getLayout(page) {
-  return (
-    <ConnectedLayout>
-      <HasTokenLayout>{page}</HasTokenLayout>
-    </ConnectedLayout>
-  );
+  return <ConnectedLayout>{page}</ConnectedLayout>;
 };
 
 export default AdminDashboard;

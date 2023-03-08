@@ -21,12 +21,14 @@ import { NextPageWithLayout } from "~~/pages/_app";
 const NoTokenPage: NextPageWithLayout = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const { isLoading, isError, data, mutate } = useMutationCreateToken({});
-  const linkToken = data?.data?.link_token || null;
+  const linkToken = data?.link_token;
   const router = useRouter();
 
   useEffect(() => {
-    mutate();
-  }, [mutate]);
+    if (acceptTerms) {
+      mutate();
+    }
+  }, [mutate, acceptTerms]);
 
   return (
     <Center
@@ -71,25 +73,26 @@ const NoTokenPage: NextPageWithLayout = () => {
                 <Checkbox
                   isChecked={acceptTerms}
                   onChange={(e) => setAcceptTerms(e.target.checked)}
-                />
-                <Text ml={2} fontSize="sm">
-                  By checking the box, I agree to DALN's{" "}
-                  <Link
-                    href="https://www.google.com"
-                    color={"primary.500"}
-                    isExternal
-                  >
-                    Terms of Use
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    href="https://www.google.com"
-                    color={"primary.500"}
-                    isExternal
-                  >
-                    Privacy Policy.
-                  </Link>
-                </Text>
+                >
+                  <Text fontSize="sm" mb={0.5}>
+                    By checking the box, I agree to DALN&apos;s{" "}
+                    <Link
+                      href="https://www.google.com"
+                      color={"primary.500"}
+                      isExternal
+                    >
+                      Terms of Use
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="https://www.google.com"
+                      color={"primary.500"}
+                      isExternal
+                    >
+                      Privacy Policy.
+                    </Link>
+                  </Text>
+                </Checkbox>
               </Flex>
             </Box>
           </WrapItem>
@@ -97,10 +100,10 @@ const NoTokenPage: NextPageWithLayout = () => {
           <Flex justifyContent="center">
             <JoinDALNButton
               linkToken={linkToken}
-              isDisabled={!acceptTerms || isError}
+              isDisabled={!acceptTerms || isError || !linkToken}
               isLoading={isLoading}
               onSuccess={() => {
-                void router.replace("user/onboarding/upload-data");
+                void router.replace("/user/onboarding/upload-data");
               }}
             >
               Join DALN

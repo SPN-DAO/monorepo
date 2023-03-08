@@ -1,5 +1,7 @@
-import lighthouse from "@lighthouse-web3/sdk";
-import S3 from "aws-sdk/clients/s3";
+import { Readable } from "stream";
+
+import { S3 } from "@aws-sdk/client-s3";
+import pinataSDK from "@pinata/sdk";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
@@ -16,8 +18,8 @@ const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
     headers: {
-      "PLAID-CLIENT-ID": process.env.NEXT_PUBLIC_PLAID_CLIENT_ID,
-      "PLAID-SECRET": process.env.NEXT_PUBLIC_PLAID_SECRET,
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+      "PLAID-SECRET": process.env.PLAID_SECRET,
     },
   },
 });
@@ -60,49 +62,58 @@ function logHook(req: PlaidHook) {
 }
 
 export default async function handler(req: PlaidHook, res: NextApiResponse) {
-  // logHook(req);
+  logHook(req);
 
   if (req.body.webhook_code === "HISTORICAL_UPDATE") {
     const access_token = await getAccessToken(req.body.item_id);
     const client = new PlaidApi(configuration);
 
-    await client
-      .transactionsSync({
-        access_token: access_token,
-      })
-      .then((response) => {
-        aws_client.putObject(
-          {
-            Bucket: "spndao",
-            Key: `${response.data.request_id}.json`,
-            Body: JSON.stringify(response.data.added),
-          },
-          (err, data) => {
-            if (err) {
-              console.log(err);
-            }
+    const transactionsSyncRes = await client.transactionsSync({
+      access_token: access_token,
+    });
 
-            const buffer = aws_client
-              .getObject({
-                Bucket: "spndao",
-                Key: `${response.data.request_id}.json`,
-              })
-              .createReadStream();
+    aws_client.putObject(
+      {
+        Bucket: "spndao",
+        Key: `${transactionsSyncRes.data.request_id}.json`,
+        Body: JSON.stringify(transactionsSyncRes.data.added),
+      },
+      async (err, data) => {
+        if (err) {
+          return res.status(500).json({ error: err });
+        }
 
-            lighthouse
-              .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
-              .then((response) => {
-                console.log(response);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          }
+        const s3obj = await aws_client.getObject({
+          Bucket: "spndao",
+          Key: `${transactionsSyncRes.data.request_id}.json`,
+        });
+
+        const buffer = s3obj.Body as Readable;
+
+        const pinata = new pinataSDK(
+          process.env.PINATA_API_KEY,
+          process.env.PINATA_API_SECRET
         );
-      });
 
-    res.status(200);
+        const options = {
+          pinataMetadata: {
+            name: req.body.item_id,
+          },
+        };
+
+        try {
+          const pinataRes = await pinata.pinFileToIPFS(buffer, options);
+          console.log(`pinataRes: ${pinataRes}`);
+          return res.status(200);
+        } catch (err) {
+          console.log(`pinata.pinFileToIPFS() failed: ${err}`);
+          return res.status(500).json({ error: err });
+        }
+      }
+    );
+
+    return res.status(200);
   } else {
-    res.status(200);
+    return res.status(200);
   }
 }

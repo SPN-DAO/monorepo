@@ -1,43 +1,58 @@
 import { Button, ButtonProps, ChakraProps, Flex } from "@chakra-ui/react";
+import axios, { AxiosError } from "axios";
 import { useCallback } from "react";
-import { usePlaidLink } from "react-plaid-link";
+import { PlaidLinkOnSuccess, usePlaidLink } from "react-plaid-link";
+import { useMutation } from "react-query";
 
-import useMutationSetAccessToken from "~~/hooks/useMutationSetAccessToken";
+interface SetAccessTokenResponse {
+  success: true;
+  plaidItemId: string;
+}
 
+const setAccessToken = async (public_token: string) => {
+  const response = await axios.post("/api/set_access_token", {
+    public_token,
+  });
+  return response.data;
+};
 interface JoinDALNButtonProps extends ButtonProps {
-  linkToken: string | null;
+  linkToken?: string;
   onSuccess?: (data?: any, variables?: any, context?: any) => void;
 }
 export default function JoinDALNButton({
-  linkToken = null,
-  onClick = () => {},
+  linkToken,
+  onClick = () => null,
   isDisabled,
-  onSuccess = () => {},
+  onSuccess = () => null,
   isLoading = false,
   ...props
 }: JoinDALNButtonProps) {
-  const { mutateAsync, isLoading: isLoadingSetAccessToken } =
-    useMutationSetAccessToken({
-      onSuccess(data, variables, context) {
-        onSuccess(data, variables, context);
-      },
-      onError(error) {
-        console.log(`axios.post() failed: ${error}`);
-      },
-    });
-  const sendPublicTokenToBackend = useCallback(
-    async (public_token: string, metadata: any) => {
-      // send public_token to server to exchange for access_token and store in db
-      await mutateAsync(public_token);
+  const { mutateAsync, isLoading: isLoadingSetAccessToken } = useMutation<
+    SetAccessTokenResponse,
+    AxiosError,
+    string
+  >(setAccessToken, {
+    onSuccess(data, variables, context) {
+      sessionStorage.setItem("plaidItemId", data.plaidItemId);
+      onSuccess(data, variables, context);
     },
-    [mutateAsync]
-  );
+    onError(error) {
+      console.log(`axios.post() failed: ${error}`);
+    },
+  });
 
-  const config: Parameters<typeof usePlaidLink>[0] = {
-    token: linkToken,
-    onSuccess: sendPublicTokenToBackend,
+  const sendPublicTokenToBackend: PlaidLinkOnSuccess = async (
+    public_token,
+    metadata
+  ) => {
+    await mutateAsync(public_token);
   };
-  const { open, ready } = usePlaidLink(config);
+
+  const { open, ready } = usePlaidLink({
+    token: linkToken || "",
+    onSuccess: sendPublicTokenToBackend,
+  });
+
   return (
     <Flex justifyContent="center">
       <Button
@@ -46,10 +61,7 @@ export default function JoinDALNButton({
         flex={1}
         isLoading={isLoading || isLoadingSetAccessToken}
         isDisabled={!linkToken || !ready || isDisabled}
-        onClick={(e) => {
-          open();
-          onClick && onClick(e);
-        }}
+        onClick={() => open()}
         {...props}
       >
         Join DALN

@@ -1,3 +1,4 @@
+import Cors from "cors";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   Configuration,
@@ -7,20 +8,45 @@ import {
   PlaidEnvironments,
   Products,
 } from "plaid";
+
+const cors = Cors({
+  methods: ["POST", "GET", "HEAD"],
+});
+
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
     headers: {
-      "PLAID-CLIENT-ID": process.env.NEXT_PUBLIC_PLAID_CLIENT_ID,
-      "PLAID-SECRET": process.env.NEXT_PUBLIC_PLAID_SECRET,
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+      "PLAID-SECRET": process.env.PLAID_SECRET,
     },
   },
 });
+
+// Helper method to wait for a middleware to execute before continuing
+// And to throw an error when an error happens in a middleware
+function runMiddleware(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  fn: (arg0: any, args1: any, args2: any) => any
+) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+
+      return resolve(result);
+    });
+  });
+}
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await runMiddleware(req, res, cors);
+
   const client = new PlaidApi(configuration);
 
   await client
@@ -32,7 +58,7 @@ export default async function handler(
       products: [Products.Auth, Products.Transactions],
       country_codes: [CountryCode.Us],
       language: "en",
-      webhook: process.env.NEXT_PUBLIC_PLAID_HOOK,
+      webhook: process.env.PLAID_HOOK,
       account_filters: {
         depository: {
           account_subtypes: [
@@ -47,6 +73,6 @@ export default async function handler(
     })
     .catch((error) => {
       console.log(`create link token failed: ${error}`);
-      res.status(500).json({ error: error });
+      res.status(500).json({ error });
     });
 }

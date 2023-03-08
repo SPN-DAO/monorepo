@@ -15,7 +15,7 @@ const OnboardingNotConnected = () => {
 
   useEffect(() => {
     if (isConnected) {
-      void router.push("/user/dashboard");
+      void router.push("/user");
     }
   }, [isConnected, router]);
 
