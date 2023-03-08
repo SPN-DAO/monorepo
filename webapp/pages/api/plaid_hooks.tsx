@@ -1,5 +1,7 @@
-// import lighthouse from "@lighthouse-web3/sdk";
-import S3 from "aws-sdk/clients/s3";
+import lighthouse from "@lighthouse-web3/sdk";
+import { Readable } from "stream";
+
+import { S3 } from "@aws-sdk/client-s3";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
@@ -66,40 +68,38 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
     const access_token = await getAccessToken(req.body.item_id);
     const client = new PlaidApi(configuration);
 
-    await client
-      .transactionsSync({
-        access_token: access_token,
-      })
-      .then((response) => {
-        aws_client.putObject(
-          {
-            Bucket: "spndao",
-            Key: `${response.data.request_id}.json`,
-            Body: JSON.stringify(response.data.added),
-          },
-          (err, data) => {
-            if (err) {
-              console.log(err);
-            }
+    const transactionsSyncRes = await client.transactionsSync({
+      access_token: access_token,
+    });
 
-            const buffer = aws_client
-              .getObject({
-                Bucket: "spndao",
-                Key: `${response.data.request_id}.json`,
-              })
-              .createReadStream();
+    aws_client.putObject(
+      {
+        Bucket: "spndao",
+        Key: `${transactionsSyncRes.data.request_id}.json`,
+        Body: JSON.stringify(transactionsSyncRes.data.added),
+      },
+      async (err, data) => {
+        if (err) {
+          console.log(err);
+        }
 
-            // lighthouse
-            //   .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
-            //   .then((response) => {
-            //     console.log(response);
-            //   })
-            //   .catch((err) => {
-            //     console.log(err);
-            //   });
-          }
-        );
-      });
+        const s3obj = await aws_client.getObject({
+          Bucket: "spndao",
+          Key: `${transactionsSyncRes.data.request_id}.json`,
+        });
+
+        const buffer = s3obj.Body as Readable;
+
+        // lighthouse
+        //   .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
+        //   .then((response) => {
+        //     console.log(response);
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+      }
+    );
 
     res.status(200);
   } else {
