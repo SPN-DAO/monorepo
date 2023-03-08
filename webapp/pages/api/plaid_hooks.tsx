@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 
 import { S3 } from "@aws-sdk/client-s3";
-import lighthouse from "@lighthouse-web3/sdk";
+import pinataSDK from "@pinata/sdk";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
@@ -90,10 +90,28 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
 
         const buffer = s3obj.Body as Readable;
 
-        lighthouse
-          .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
-          .then((response) => {
-            console.log(response);
+        const pinata = new pinataSDK(
+          process.env.PINATA_API_KEY,
+          process.env.PINATA_API_SECRET
+        );
+
+        // const options = {
+        //   pinataMetadata: {
+        //     name: "DALN test",
+        //     keyvalues: {
+        //       customKey: "customValue",
+        //       customKey2: "customValue2",
+        //     },
+        //   },
+        //   pinataOptions: {
+        //     cidVersion: 0,
+        //   },
+        // };
+
+        pinata
+          .pinFileToIPFS(buffer)
+          .then((result) => {
+            console.log(result);
           })
           .catch((err) => {
             console.log(err);
