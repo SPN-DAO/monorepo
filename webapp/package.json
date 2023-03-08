@@ -22,6 +22,7 @@
     "@wagmi/cli": "^0.1.5",
     "aws-sdk": "^2.1323.0",
     "axios": "^1.3.3",
+    "bls-eth-wasm": "^1.0.6",
     "cors": "^2.8.5",
     "ethers": "^5.7.2",
     "framer-motion": "^9.0.0",
