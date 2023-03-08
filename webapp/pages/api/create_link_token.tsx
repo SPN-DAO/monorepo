@@ -32,7 +32,7 @@ export default async function handler(
       products: [Products.Auth, Products.Transactions],
       country_codes: [CountryCode.Us],
       language: "en",
-      webhook: process.env.NEXT_PUBLIC_PLAID_HOOK,
+      webhook: process.env.PLAID_HOOK,
       account_filters: {
         depository: {
           account_subtypes: [
