@@ -1,3 +1,4 @@
+import Cors from "cors";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   Configuration,
@@ -7,6 +8,11 @@ import {
   PlaidEnvironments,
   Products,
 } from "plaid";
+
+const cors = Cors({
+  methods: ["POST", "GET", "HEAD"],
+});
+
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
@@ -17,10 +23,30 @@ const configuration = new Configuration({
   },
 });
 
+// Helper method to wait for a middleware to execute before continuing
+// And to throw an error when an error happens in a middleware
+function runMiddleware(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  fn: (arg0: any, args1: any, args2: any) => any
+) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+
+      return resolve(result);
+    });
+  });
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await runMiddleware(req, res, cors);
+
   const client = new PlaidApi(configuration);
 
   await client
