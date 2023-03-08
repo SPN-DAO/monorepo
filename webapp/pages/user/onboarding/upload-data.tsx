@@ -111,10 +111,15 @@ const UploadDataPage: NextPageWithLayout = () => {
   }, [step]);
 
   useEffect(() => {
-    if (mintToken.isLoading) {
+    if (
+      !!process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS &&
+      !!userAddress &&
+      !!cid &&
+      mintToken.isLoading
+    ) {
       setStep("minting");
     }
-  }, [mintToken.isLoading]);
+  }, [cid, mintToken.isLoading, userAddress]);
 
   useEffect(() => {
     if (mintToken.isSuccess) {
