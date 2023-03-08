@@ -1,9 +1,20 @@
 import { Button, ButtonProps, ChakraProps, Flex } from "@chakra-ui/react";
+import axios, { AxiosError } from "axios";
 import { useCallback } from "react";
 import { PlaidLinkOnSuccess, usePlaidLink } from "react-plaid-link";
+import { useMutation } from "react-query";
 
-import useMutationSetAccessToken from "~~/hooks/useMutationSetAccessToken";
+interface SetAccessTokenResponse {
+  success: true;
+  plaidItemId: string;
+}
 
+const setAccessToken = async (public_token: string) => {
+  const response = await axios.post("/api/set_access_token", {
+    public_token,
+  });
+  return response.data;
+};
 interface JoinDALNButtonProps extends ButtonProps {
   linkToken?: string;
   onSuccess?: (data?: any, variables?: any, context?: any) => void;
@@ -16,17 +27,19 @@ export default function JoinDALNButton({
   isLoading = false,
   ...props
 }: JoinDALNButtonProps) {
-  const { mutateAsync, isLoading: isLoadingSetAccessToken } =
-    useMutationSetAccessToken({
-      onSuccess(data, variables, context) {
-        console.log("setAccessToken data", data);
-        sessionStorage.setItem("plaidItemId", data.plaidItemId);
-        onSuccess(data, variables, context);
-      },
-      onError(error) {
-        console.log(`axios.post() failed: ${error}`);
-      },
-    });
+  const { mutateAsync, isLoading: isLoadingSetAccessToken } = useMutation<
+    SetAccessTokenResponse,
+    AxiosError,
+    string
+  >(setAccessToken, {
+    onSuccess(data, variables, context) {
+      sessionStorage.setItem("plaidItemId", data.plaidItemId);
+      onSuccess(data, variables, context);
+    },
+    onError(error) {
+      console.log(`axios.post() failed: ${error}`);
+    },
+  });
 
   const sendPublicTokenToBackend: PlaidLinkOnSuccess = async (
     public_token,
