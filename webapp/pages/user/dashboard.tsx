@@ -36,7 +36,7 @@ const Dashboard: NextPageWithLayout = () => {
   const { address } = useAccount();
 
   const findByAddress = encodeURIComponent(
-    ` WHERE address=CAST('${address}' as text)`
+    ` WHERE address='${address?.toLowerCase()}'`
   );
 
   const tablelandMetadata = useQuery(
@@ -64,10 +64,7 @@ const Dashboard: NextPageWithLayout = () => {
           <Card w="full">
             <CardHeader>
               <Flex justifyContent="flex-end" alignItems="center">
-                <BurnSBT
-                  tokenId={tablelandMetadata?.data?.[0]?.id}
-                  isDisabled={!tablelandMetadata?.data?.[0]?.id}
-                />
+                <BurnSBT tokenId={tablelandMetadata?.data?.[0]?.id} />
               </Flex>
 
               <Heading
