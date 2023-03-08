@@ -1,4 +1,4 @@
-import lighthouse from "@lighthouse-web3/sdk";
+// import lighthouse from "@lighthouse-web3/sdk";
 import S3 from "aws-sdk/clients/s3";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -89,14 +89,14 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
               })
               .createReadStream();
 
-            lighthouse
-              .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
-              .then((response) => {
-                console.log(response);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            // lighthouse
+            //   .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
+            //   .then((response) => {
+            //     console.log(response);
+            //   })
+            //   .catch((err) => {
+            //     console.log(err);
+            //   });
           }
         );
       });
