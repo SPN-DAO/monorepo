@@ -5,11 +5,13 @@ interface CreateLinkResponse {
   link_token: string;
 }
 
+const createLinkToken = async () => {
+  const response = await axios.post("/api/create_link_token");
+
+  return response.data as CreateLinkResponse;
+};
+
 const useMutationCreateToken = (options: Parameters<typeof useMutation>[2]) =>
-  useMutation<AxiosResponse<CreateLinkResponse>>(
-    ["create-token"],
-    () => axios.post("/api/create_link_token"),
-    options
-  );
+  useMutation<CreateLinkResponse>(["create-token"], createLinkToken, options);
 
 export default useMutationCreateToken;

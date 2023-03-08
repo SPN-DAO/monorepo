@@ -11,8 +11,8 @@ const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
     headers: {
-      "PLAID-CLIENT-ID": process.env.NEXT_PUBLIC_PLAID_CLIENT_ID,
-      "PLAID-SECRET": process.env.NEXT_PUBLIC_PLAID_SECRET,
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+      "PLAID-SECRET": process.env.PLAID_SECRET,
     },
   },
 });
@@ -47,6 +47,6 @@ export default async function handler(
     })
     .catch((error) => {
       console.log(`create link token failed: ${error}`);
-      res.status(500).json({ error: error });
+      res.status(500).json({ error });
     });
 }

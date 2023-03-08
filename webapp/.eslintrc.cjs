@@ -174,6 +174,7 @@ module.exports = {
       },
     ],
     "react/no-unescaped-entities": "warn",
+    "@typescript-eslint/no-unsafe-return": "off",
   },
   overrides: [
     {

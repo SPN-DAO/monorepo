@@ -15,7 +15,6 @@ import { NextPageWithLayout } from "../_app";
 
 import { DashboardStat, BurnSBT } from "~~/components/Dashboard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
-import HasTokenLayout from "~~/components/layouts/HasTokenLayout";
 import PageTransition from "~~/components/PageTransition";
 
 const Dashboard: NextPageWithLayout = () => {
@@ -65,11 +64,7 @@ const Dashboard: NextPageWithLayout = () => {
 };
 
 Dashboard.getLayout = function getLayout(page) {
-  return (
-    <ConnectedLayout>
-      <HasTokenLayout>{page}</HasTokenLayout>
-    </ConnectedLayout>
-  );
+  return <ConnectedLayout>{page}</ConnectedLayout>;
 };
 
 export default Dashboard;

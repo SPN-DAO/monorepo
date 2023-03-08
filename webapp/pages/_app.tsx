@@ -30,7 +30,7 @@ const queryClient = new QueryClient();
 const { chains, provider, webSocketProvider } = configureChains(
   [
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
-      ? [localhost, polygonMumbai]
+      ? [polygonMumbai]
       : []),
     polygonMumbai,
   ],
