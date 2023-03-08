@@ -1,7 +1,7 @@
-import lighthouse from "@lighthouse-web3/sdk";
 import { Readable } from "stream";
 
 import { S3 } from "@aws-sdk/client-s3";
+import lighthouse from "@lighthouse-web3/sdk";
 import { MongoClient } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
@@ -90,14 +90,14 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
 
         const buffer = s3obj.Body as Readable;
 
-        // lighthouse
-        //   .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
-        //   .then((response) => {
-        //     console.log(response);
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //   });
+        lighthouse
+          .uploadBuffer(buffer, process.env.LIGHTHOUSE_API_KEY as string)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     );
 
