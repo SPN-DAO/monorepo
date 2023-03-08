@@ -20,6 +20,7 @@ import { DashboardStat, BurnSBT } from "~~/components/Dashboard";
 import ConnectedLayout from "~~/components/layouts/ConnectedLayout";
 import PageTransition from "~~/components/PageTransition";
 import { useBasicSpnFactoryMetadataUri } from "~~/generated/wagmiTypes";
+import { watch } from "fs";
 
 const getTableLandMetadata: QueryFunction<any, string[]> = async ({
   queryKey,
@@ -44,6 +45,7 @@ const Dashboard: NextPageWithLayout = () => {
     getTableLandMetadata,
     {
       enabled: !!tablelandMetadataURI.data && !!address,
+      refetchInterval: 5000,
     }
   );
 

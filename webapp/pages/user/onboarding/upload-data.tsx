@@ -10,7 +10,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import DataBaseSvgComponent from "~~/components/DataBaseSvgComponent";
@@ -25,42 +25,51 @@ import {
 import usePrepareWriteAndWaitTx from "~~/hooks/usePrepareWriteAndWaitTx";
 import { NextPageWithLayout } from "~~/pages/_app";
 
-const HEADER_STRINGS = [
-  {
+const steps = {
+  processing: {
+    number: 1,
     title: "Processing...",
     subtitle: "Your file will be encrypted immediately after uploading process",
   },
-  {
+  uploading: {
+    number: 2,
     title: "Uploading to IPFS",
     subtitle:
       "Your data is being uploaded to decentralized storage provided by IPFS",
   },
-  {
+  encrypting: {
+    number: 3,
     title: "Encrypting your data...",
     subtitle:
       "After encryption, your file will be stored on decentralized storage provided by IPFS.",
   },
-  {
+  uploadSuccess: {
+    number: 4,
     title: "Upload successful! Mint your token now",
     subtitle:
       "Only authorized parties such as DAO admins can decrypt and access your data. You will be rewarded with Matic whenever your data is decrypted and processed.",
   },
-  {
+  minting: {
+    number: 5,
     title: "Confirm minting in your wallet",
     subtitle:
       "You will be asked to review and confirm the minting from your wallet.",
   },
-  {
+  mintSuccess: {
+    number: 6,
     title: "Token mint successful",
     subtitle:
       "You can always burn the token in the personal dashboard if you wish to exit from the DAO and stop sharing your encrypted data.",
   },
-];
-const UploadDataPage: NextPageWithLayout = () => {
-  const [progress, setProgress] = useState(70);
-  const [success, setSuccess] = useState(false);
+};
 
-  const isMint = progress > 67;
+const UploadDataPage: NextPageWithLayout = () => {
+  const [step, setStep] = useState<keyof typeof steps>("processing");
+
+  const progress = useMemo(
+    () => Math.round((100 / Object.keys(steps).length) * steps[step].number),
+    [step]
+  );
 
   const { address: userAddress } = useAccount();
 
@@ -76,9 +85,41 @@ const UploadDataPage: NextPageWithLayout = () => {
   });
 
   useEffect(() => {
+    if (step === "processing") {
+      const timer = setTimeout(() => {
+        setStep("uploading");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (step === "uploading") {
+      const timer = setTimeout(() => {
+        setStep("encrypting");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (step === "encrypting") {
+      const timer = setTimeout(() => {
+        setStep("uploadSuccess");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (mintToken.isLoading) {
+      setStep("minting");
+    }
+  }, [mintToken.isLoading]);
+
+  useEffect(() => {
     if (mintToken.isSuccess) {
-      setProgress(100);
-      setSuccess(true);
+      sessionStorage.removeItem("plaidItemId");
+      setStep("mintSuccess");
     }
   }, [mintToken.isSuccess]);
 
@@ -90,13 +131,13 @@ const UploadDataPage: NextPageWithLayout = () => {
     >
       <Box alignSelf="center" width="80vw" overflow={"hidden"}>
         <Heading as="h1" size="lg" textAlign="center" mb={2}>
-          Processing...
+          {steps[step].title}
         </Heading>
         <Text textAlign="center" fontSize="lg" mb={16} color="#4A5568">
-          Your file will be encrypted immediately after uploading process
+          {steps[step].subtitle}
         </Text>
         <Center alignItems="center">
-          {success ? (
+          {step === "mintSuccess" ? (
             <Container>
               <Flex flex={1} justifyContent="center">
                 <SuccessSvgComponent />
@@ -114,12 +155,14 @@ const UploadDataPage: NextPageWithLayout = () => {
               height={"300px"}
               maxWidth={"680px"}
               flex={1}
-              borderStyle={isMint ? undefined : "dashed"}
-              borderWidth={isMint ? undefined : 1}
-              borderColor={isMint ? undefined : "rgba(0, 0, 0, 0.3)"}
+              borderStyle={step === "uploadSuccess" ? undefined : "dashed"}
+              borderWidth={step === "uploadSuccess" ? undefined : 1}
+              borderColor={
+                step === "uploadSuccess" ? undefined : "rgba(0, 0, 0, 0.3)"
+              }
               justifyContent="center"
             >
-              {isMint ? (
+              {step === "uploadSuccess" ? (
                 <Container>
                   <Center>
                     <DataBaseSvgComponent />
@@ -169,7 +212,9 @@ const UploadDataPage: NextPageWithLayout = () => {
             </Card>
           )}
         </Center>
-        {success ? null : <UploadUserDataProgressBar progress={progress} />}
+        {step === "mintSuccess" ? null : (
+          <UploadUserDataProgressBar progress={progress} />
+        )}
       </Box>
     </Center>
   );

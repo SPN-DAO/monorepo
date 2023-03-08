@@ -10,8 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Component, ComponentProps, useEffect, useRef } from "react";
+import { useAccount, useContractRead } from "wagmi";
 
-import { basicSpnFactoryABI } from "~~/generated/wagmiTypes";
+import {
+  basicSpnFactoryABI,
+  erc20ABI,
+  useBasicSpnFactoryBalanceOf,
+} from "~~/generated/wagmiTypes";
 import usePrepareWriteAndWaitTx from "~~/hooks/usePrepareWriteAndWaitTx";
 
 interface BurnSBTProps extends ComponentProps<typeof Button> {
@@ -27,6 +32,14 @@ export default function BurnSBT({
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
+  const { address } = useAccount();
+
+  const balanceQuery = useBasicSpnFactoryBalanceOf({
+    address: process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS as `0x${string}`,
+    args: [address || "0x0"],
+    enabled: !!address,
+    watch: true,
+  });
 
   const userBurn = usePrepareWriteAndWaitTx({
     address: process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS as `0x${string}`,
@@ -38,10 +51,10 @@ export default function BurnSBT({
   });
 
   useEffect(() => {
-    if (userBurn.isSuccess) {
-      void router.push("/user/onboarding/no-token");
+    if (userBurn.isSuccess && balanceQuery.data && balanceQuery.data.lte(0)) {
+      void router.push("/user/burnt-token");
     }
-  }, [onClose, router, userBurn.isSuccess]);
+  }, [balanceQuery.data, onClose, router, userBurn.isSuccess]);
 
   const handleBurn = async () => {
     if (userBurn.writeAsync) {
@@ -56,7 +69,15 @@ export default function BurnSBT({
 
   return (
     <>
-      <Button colorScheme="red" variant="outline" onClick={onOpen} {...props}>
+      <Button
+        colorScheme="red"
+        variant="outline"
+        onClick={onOpen}
+        isLoading={
+          userBurn.isLoading || (userBurn.isSuccess && balanceQuery.data?.gt(0))
+        }
+        {...props}
+      >
         Burn my SBT
       </Button>
 
@@ -86,8 +107,8 @@ export default function BurnSBT({
                 colorScheme="red"
                 onClick={handleBurn}
                 isDisabled={!userBurn.writeAsync}
-                isLoading={userBurn.isLoading}
                 ml={3}
+                isLoading={userBurn.isLoading}
               >
                 Burn it anyway
               </Button>
