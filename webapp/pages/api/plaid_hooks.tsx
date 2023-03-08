@@ -80,7 +80,7 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
       },
       async (err, data) => {
         if (err) {
-          console.log(err);
+          return res.status(500).json({ error: err });
         }
 
         const s3obj = await aws_client.getObject({
@@ -97,23 +97,23 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
 
         const options = {
           pinataMetadata: {
-            name: "DALN test",
+            name: req.body.item_id,
           },
         };
 
-        pinata
-          .pinFileToIPFS(buffer, options)
-          .then((result) => {
-            console.log(result);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        try {
+          const pinataRes = await pinata.pinFileToIPFS(buffer, options);
+          console.log(`pinataRes: ${pinataRes}`);
+          return res.status(200);
+        } catch (err) {
+          console.log(`pinata.pinFileToIPFS() failed: ${err}`);
+          return res.status(500).json({ error: err });
+        }
       }
     );
 
-    res.status(200);
+    return res.status(200);
   } else {
-    res.status(200);
+    return res.status(200);
   }
 }
