@@ -110,23 +110,19 @@ const UploadDataPage: NextPageWithLayout = () => {
     }
   }, [step]);
 
-  useEffect(() => {
-    if (
-      !!process.env.NEXT_PUBLIC_DALN_CONTRACT_ADDRESS &&
-      !!userAddress &&
-      !!cid &&
-      mintToken.isLoading
-    ) {
+  const mint = async () => {
+    if (mintToken.writeAsync) {
       setStep("minting");
+      try {
+        await mintToken.writeAsync();
+        setStep("mintSuccess");
+        sessionStorage.removeItem("plaidItemId");
+      } catch (e) {
+        console.error(e);
+        setStep("uploadSuccess");
+      }
     }
-  }, [cid, mintToken.isLoading, userAddress]);
-
-  useEffect(() => {
-    if (mintToken.isSuccess) {
-      sessionStorage.removeItem("plaidItemId");
-      setStep("mintSuccess");
-    }
-  }, [mintToken.isSuccess]);
+  };
 
   return (
     <Center
@@ -185,7 +181,7 @@ const UploadDataPage: NextPageWithLayout = () => {
                       isDisabled={!mintToken.write}
                       isLoading={mintToken.isLoading}
                       onClick={() => {
-                        mintToken.write && mintToken.write();
+                        void mint();
                       }}
                     >
                       Mint token
