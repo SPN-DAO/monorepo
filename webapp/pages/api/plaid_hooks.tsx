@@ -95,21 +95,14 @@ export default async function handler(req: PlaidHook, res: NextApiResponse) {
           process.env.PINATA_API_SECRET
         );
 
-        // const options = {
-        //   pinataMetadata: {
-        //     name: "DALN test",
-        //     keyvalues: {
-        //       customKey: "customValue",
-        //       customKey2: "customValue2",
-        //     },
-        //   },
-        //   pinataOptions: {
-        //     cidVersion: 0,
-        //   },
-        // };
+        const options = {
+          pinataMetadata: {
+            name: "DALN test",
+          },
+        };
 
         pinata
-          .pinFileToIPFS(buffer)
+          .pinFileToIPFS(buffer, options)
           .then((result) => {
             console.log(result);
           })
