@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Flex,
   Tab,
   Table,
@@ -23,8 +22,10 @@ import {
   Row,
   Table as TableType,
   useReactTable,
+  CellContext as TanCellContext,
+  RowData,
 } from "@tanstack/react-table";
-import React from "react";
+import React, { useState } from "react";
 
 import IndeterminateCheckbox from "../atoms/IndeterminateCheckbox";
 import DecryptButton from "../molecules/admin/dashboard/DecryptButton";
@@ -140,6 +141,13 @@ const defaultData: Item[] = [
 
 const columnHelper = createColumnHelper<Item>();
 
+type CellContext<TData extends RowData, TValue> = TanCellContext<
+  TData,
+  TValue
+> & {
+  hover: boolean;
+};
+
 const columns = [
   {
     id: "select",
@@ -180,9 +188,46 @@ const columns = [
   }),
   columnHelper.accessor("isDecrypted", {
     header: () => "Status",
-    cell: (item) => <EncryptedStatus isDecrypted={item.getValue()} />,
+    cell: (item: unknown) => {
+      const itemCasted = item as CellContext<Row<Item>, boolean>;
+      const isDecrypted = itemCasted.getValue();
+      return isDecrypted && itemCasted.hover ? (
+        <DecryptButton />
+      ) : (
+        <EncryptedStatus isDecrypted={itemCasted.getValue()} />
+      );
+    },
   }),
 ];
+
+const RowItem = (row: Row<Item>) => {
+  const [isMouseOver, setOnMouseOver] = useState(false);
+  return (
+    <Tr
+      key={row.id}
+      sx={{
+        "&:hover": {
+          backgroundColor: "#F1F4F9",
+        },
+      }}
+      onMouseEnter={() => {
+        setOnMouseOver(true);
+      }}
+      onMouseLeave={() => {
+        setOnMouseOver(false);
+      }}
+    >
+      {row.getVisibleCells().map((cell) => (
+        <Td key={cell.id}>
+          {flexRender(cell.column.columnDef.cell, {
+            ...cell.getContext(),
+            hover: isMouseOver,
+          })}
+        </Td>
+      ))}
+    </Tr>
+  );
+};
 
 const isDecryptedFilterFn: FilterFn<any> = (row, columnId, value, addMeta) => {
   const isDecrypted = value === "Decrypted";
@@ -273,22 +318,7 @@ export default function AdminDataTable() {
             ))}
           </Thead>
           <Tbody bgColor="white" fontSize="sm">
-            {table.getRowModel().rows.map((row) => (
-              <Tr
-                key={row.id}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#F1F4F9",
-                  },
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <Td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Td>
-                ))}
-              </Tr>
-            ))}
+            {table.getRowModel().rows.map(RowItem)}
           </Tbody>
         </Table>
       </Box>
