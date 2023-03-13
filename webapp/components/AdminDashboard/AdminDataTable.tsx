@@ -200,35 +200,6 @@ const columns = [
   }),
 ];
 
-const RowItem = (row: Row<Item>) => {
-  const [isMouseOver, setOnMouseOver] = useState(false);
-  return (
-    <Tr
-      key={row.id}
-      sx={{
-        "&:hover": {
-          backgroundColor: "#F1F4F9",
-        },
-      }}
-      onMouseEnter={() => {
-        setOnMouseOver(true);
-      }}
-      onMouseLeave={() => {
-        setOnMouseOver(false);
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <Td key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, {
-            ...cell.getContext(),
-            hover: isMouseOver,
-          })}
-        </Td>
-      ))}
-    </Tr>
-  );
-};
-
 const isDecryptedFilterFn: FilterFn<any> = (row, columnId, value, addMeta) => {
   const isDecrypted = value === "Decrypted";
   if (value) {
@@ -239,6 +210,7 @@ const isDecryptedFilterFn: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 export default function AdminDataTable() {
   const [data, setData] = React.useState(() => [...defaultData]);
+  const [isMouseOverRowId, setIsMouseOverRowId] = useState("");
 
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -318,7 +290,33 @@ export default function AdminDataTable() {
             ))}
           </Thead>
           <Tbody bgColor="white" fontSize="sm">
-            {table.getRowModel().rows.map(RowItem)}
+            {table.getRowModel().rows.map((row: Row<Item>) => {
+              return (
+                <Tr
+                  key={row.id}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#F1F4F9",
+                    },
+                  }}
+                  onMouseEnter={() => {
+                    setIsMouseOverRowId(row.id);
+                  }}
+                  onMouseLeave={() => {
+                    setIsMouseOverRowId("");
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <Td key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, {
+                        ...cell.getContext(),
+                        hover: row.id === isMouseOverRowId,
+                      })}
+                    </Td>
+                  ))}
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
       </Box>
