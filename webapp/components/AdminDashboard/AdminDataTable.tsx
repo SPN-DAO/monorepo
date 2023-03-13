@@ -1,8 +1,12 @@
 import {
   Box,
+  Button,
   Flex,
+  Tab,
   Table,
   TableContainer,
+  TabList,
+  Tabs,
   Tbody,
   Td,
   Text,
@@ -12,13 +16,15 @@ import {
 } from "@chakra-ui/react";
 import {
   createColumnHelper,
+  FilterFn,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   Row,
   Table as TableType,
   useReactTable,
 } from "@tanstack/react-table";
-import * as React from "react";
+import React from "react";
 
 import IndeterminateCheckbox from "../atoms/IndeterminateCheckbox";
 import DecryptButton from "../molecules/admin/dashboard/DecryptButton";
@@ -174,30 +180,76 @@ const columns = [
   }),
   columnHelper.accessor("isDecrypted", {
     header: () => "Status",
-    cell: (item) =>
-      item.getValue() ? <EncryptedStatus isDecrypted /> : <DecryptButton />,
+    cell: (item) => <EncryptedStatus isDecrypted={item.getValue()} />,
   }),
 ];
+
+const isDecryptedFilterFn: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const isDecrypted = value === "Decrypted";
+  if (value) {
+    return row.getValue("isDecrypted") === isDecrypted;
+  }
+  return true;
+};
 
 export default function AdminDataTable() {
   const [data, setData] = React.useState(() => [...defaultData]);
 
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [statusFilter, setStatusFilter] = React.useState<
+    null | "Decrypted" | "Encrypted"
+  >(null);
+
+  const handleTabsChange = (index: number) => {
+    switch (index) {
+      case 0:
+        setStatusFilter(null);
+        break;
+      case 1:
+        setStatusFilter("Encrypted");
+        break;
+      case 2:
+        setStatusFilter("Decrypted");
+        break;
+      default:
+        setStatusFilter(null);
+
+        break;
+    }
+  };
+
   const table = useReactTable({
     data,
     columns,
     state: {
       rowSelection,
+      globalFilter: statusFilter,
     },
-    enableRowSelection: true,
-    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: (row) => {
+      return !row.getValue("isDecrypted");
+    },
     onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    globalFilterFn: isDecryptedFilterFn,
+    onGlobalFilterChange: setStatusFilter,
+    getFilteredRowModel: getFilteredRowModel(),
+    filterFns: {
+      isDecryptedFilterFn,
+    },
   });
 
   return (
     <TableContainer>
       <Box overflowY="auto" maxHeight="60vh">
+        <Tabs onChange={handleTabsChange}>
+          <TabList>
+            <Tab>All data</Tab>
+            <Tab>Encrypted data</Tab>
+            <Tab>Decrypted data</Tab>
+          </TabList>
+        </Tabs>
+
         <Table
           colorScheme="gray"
           overflow="hidden"
@@ -222,7 +274,14 @@ export default function AdminDataTable() {
           </Thead>
           <Tbody bgColor="white" fontSize="sm">
             {table.getRowModel().rows.map((row) => (
-              <Tr key={row.id}>
+              <Tr
+                key={row.id}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#F1F4F9",
+                  },
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <Td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
