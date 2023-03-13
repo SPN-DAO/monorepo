@@ -1,6 +1,8 @@
 import {
   Box,
+  Button,
   Flex,
+  Spacer,
   Tab,
   Table,
   TableContainer,
@@ -25,7 +27,7 @@ import {
   CellContext as TanCellContext,
   RowData,
 } from "@tanstack/react-table";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import IndeterminateCheckbox from "../atoms/IndeterminateCheckbox";
 import DecryptButton from "../molecules/admin/dashboard/DecryptButton";
@@ -256,9 +258,20 @@ export default function AdminDataTable() {
     },
   });
 
+  const rowSelectedqty = Object.keys(rowSelection).length;
+  const totalSessionPayment = useMemo(() => {
+    const rowIds = Object.keys(rowSelection);
+    let totalSessionPaymentAux = 0;
+    rowIds.forEach((id) => {
+      const paymentAmount: number = table.getRow(id).getValue("sessionPayment");
+      totalSessionPaymentAux += paymentAmount;
+    });
+    return totalSessionPaymentAux;
+  }, [table, rowSelection]);
+
   return (
     <TableContainer>
-      <Box overflowY="auto" maxHeight="60vh">
+      <Flex marginBottom={3}>
         <Tabs onChange={handleTabsChange}>
           <TabList>
             <Tab>All data</Tab>
@@ -266,7 +279,16 @@ export default function AdminDataTable() {
             <Tab>Decrypted data</Tab>
           </TabList>
         </Tabs>
-
+        <Spacer />
+        {rowSelectedqty > 0 ? (
+          <Button minWidth={"180px"}>
+            <Text>{`${`Decrypt selected ${rowSelectedqty} data set${
+              rowSelectedqty > 1 ? "s" : ""
+            }`}`}</Text>
+          </Button>
+        ) : null}
+      </Flex>
+      <Box overflowY="auto" maxHeight="60vh">
         <Table
           colorScheme="gray"
           overflow="hidden"
